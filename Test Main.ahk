@@ -252,11 +252,10 @@ Class Main Extends CGUI
     {
         if (!this.drpProfiles.SelectedIndex)
             return
-            
+               
         SelectedIndex := this.drpProfiles.SelectedIndex
-        ControlGet, var, List, Focused, % this.drpProfiles.ClassNN, A ; Get text from dropdown
+        ControlGet, var, List, Focused, % this.drpProfiles.ClassNN, % "ahk_id " this.hwnd ; Get text from dropdown
         StringSplit, var, var, `n
-        
         
         if (!selectedText := var%SelectedIndex%)
             return
@@ -400,22 +399,23 @@ ProfileSwitcher:
     WinGet, proccessExe, ProcessPath, A
     if (proccessExe = lastExe)
         return
-    debug("Checking for different profile.")
+    debug ? debug("Checking for different profile.")
     Loop % A_ScriptDir . "\Profiles\*.xml"
     {
         FileRead, text, % A_LoopFileLongPath    
         RegExMatch(text, "`am)\<exe\>(.*)?\<", exe)
-
+        
         if (proccessExe = exe1)
         {
+            debug ? debug("Found exe: " . SubStr(A_LoopFileName, 1, -4))
             if (currentXml != A_LoopFileLongPath)
-                Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, ahk_pid %PID%
+                Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
             break
-            debug("Found exe: " . exe1)
         }
     }
-    ;if (currentXml != A_ScriptDir . "\Profiles\Default.xml")
-    ; Control, ChooseString, Default, % gui.drpProfiles.ClassNN, ahk_pid %PID%
+    debug(currentXml)
+    if (currentXml != A_ScriptDir . "\Profiles\Default.xml")
+        Control, ChooseString, Default, % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
     lastExe := proccessExe
 Return
 

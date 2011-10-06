@@ -109,7 +109,7 @@ SelectExe:
     if (A_ThisHotkey = "F12")
     {
         WinGet, exeName, ProcessPath , A
-        gui.edtExe.Text := exeName
+        gui.Profile.edtExe.Text := exeName
     }
     Hotkey, F12, Off
     Hotkey, Esc, Off
