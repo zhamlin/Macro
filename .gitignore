@@ -1,0 +1,5 @@
+*.exe
+
+lib/_doc/
+profiles/
+res/scripts/
