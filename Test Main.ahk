@@ -100,7 +100,7 @@ Class Main Extends CGUI
         
         this.LoadProfiles()
         
-        this.Menu := this.MenuBar
+        this.AddMenuBar(this.MenuBar)
 		this.Title := "Main Gui"
         this.Show("h440 w820")
         
