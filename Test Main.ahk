@@ -7,7 +7,7 @@ SetBatchLines, -1
 ListLines, Off
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread
+global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender
 
 args := arg()
 debug := 1 ;args[1]
@@ -17,7 +17,6 @@ version := 0.3
 
 if (!FileExist(A_ScriptDir . "\res"))
     Gosub, Install
-; *TODO: AutoUpdate
 
 currentXml := A_ScriptDir . "\Profiles\Default.xml"
 xml := new Xml(currentXml)
@@ -27,12 +26,11 @@ ahkDll := A_ScriptDir . "\res\dll\AutoHotkey.dll"
 
 AhkRecorder := AhkDllThread(ahkDll)
 AhkSender := AhkDllThread(ahkDll)
-AhkScript := AhkDllThread(ahkDll)b
+;AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
 
-
 PID := DllCall("GetCurrentProcessId")
-SetTimer, ProfileSwitcher, 1000
+SetTimer, ProfileSwitcher, 100
 gui := new Main()
 
 
@@ -105,7 +103,8 @@ Class Main Extends CGUI
         this.Show("h440 w820")
         
         ControlGet, Tabhwnd, Hwnd,, % this.tabControl.ClassNN
-        this.hSci := SCI_Add(this.hwnd, 22, 38, 780, 340, "Child Border Visible GROUP TABSTOP ", "", A_ScriptDir . "\res\dll\scilexer.dll") ; Add scintilla control to tab.
+        ; Add scintilla control to tab.
+        this.hSci := SCI_Add(this.hwnd, 22, 38, 780, 340, "Child Border Visible GROUP TABSTOP ", "", A_ScriptDir . "\res\dll\scilexer.dll")
         Control, Hide,,, % "ahk_id" this.hSci
         
         Control, ChooseString, Default, % this.drpProfiles.ClassNN, A
@@ -193,7 +192,7 @@ Class Main Extends CGUI
                 Sleep, 10
             
             if (!script)
-                SCI_SetText(script := ";Key = key pressed`n;Event = Pressed or Down orUp`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}")
+                SCI_SetText(script := ";Key = key pressed`n;Event = Can be Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}")
             
             AhkScript.addScript(script)
             xml.AddScript(script)
@@ -341,7 +340,7 @@ Class Main Extends CGUI
         FileRead, script, % A_ScriptDir . "\res\scripts\" . name . ".ahk"
             
         if (!script)
-            script := ";Key = key pressed`n;Event = Pressed or Down orUp`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}"
+            script := ";Key = key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}"
 
         AhkScript.ahkTerminate("")
         ScriptThread := AhkScript.ahktextdll("#Persistent`n#NoTrayIcon`nSetWorkingDir, " . A_ScriptDir . "\`n")
@@ -413,7 +412,6 @@ ProfileSwitcher:
             break
         }
     }
-    debug(currentXml)
     if (currentXml != A_ScriptDir . "\Profiles\Default.xml")
         Control, ChooseString, Default, % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
     lastExe := proccessExe
@@ -558,7 +556,7 @@ Pressed:
     {
         While (GetKeyState(hotkey, "P") )
             AhkScript.ahkFunction("OnEvent", hotkey, "Down", A_TimeSinceThisHotkey, currentXml)
-        AhkScript.ahkFunction("OnEvent", hotkey, "Up", A_TimeSinceThisHotkey, currentXml)
+        AhkScript.ahkFunction("OnEvent", hotkey, "Released", A_TimeSinceThisHotkey, currentXml)
     }
 Return
 
@@ -576,7 +574,6 @@ Hotkeys(disable = 0) {
 }
 
 HandleKey(type, value, delay = -1) {
-    global AhkSender
     text := xml.Get(type, value, "value")
     
     if (type = "macro")
@@ -622,6 +619,7 @@ Install:
     FileInstall, res\Recorder.ahk, res\Recorder.ahk
 return
 
-#Include, %A_ScriptDir%\res\gui\Macro Recorder.ahk
-#Include, %A_ScriptDir%\res\gui\Profile Settings.ahk
-#Include, %A_ScriptDir%\res\gui\TextBlock.ahk
+#Include, %A_ScriptDir%\res\gui\macro recorder.ahk
+#Include, %A_ScriptDir%\res\gui\profile settings.ahk
+#Include, %A_ScriptDir%\res\gui\textBlock.ahk
+#Include, %A_ScriptDir%\res\gui\settings.ahk
