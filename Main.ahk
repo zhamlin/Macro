@@ -12,12 +12,10 @@ global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, 
 args := arg()
 debug := 1 ;args[1]
 debugFile := args[2]
- 
-version := 0.3
+version := 0.4
 
 if (!FileExist(A_ScriptDir . "\res"))
     Gosub, Install
-
 
 currentXml := A_ScriptDir . "\Profiles\Default.xml"
 xml := new Xml(currentXml)
@@ -27,7 +25,7 @@ ahkDll := A_ScriptDir . "\res\dll\AutoHotkey.dll"
 
 AhkRecorder := AhkDllThread(ahkDll)
 AhkSender := AhkDllThread(ahkDll)
-;AhkScript := AhkDllThread(ahkDll)
+AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
 
 PID := DllCall("GetCurrentProcessId")
