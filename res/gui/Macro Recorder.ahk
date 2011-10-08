@@ -160,9 +160,9 @@ Class MacroRecorder Extends CGUI
         xml.Delete("macros", text)
     }
     
-    ContextMenu()
+    currentMacro_ContextMenu()
     {
-        if (this.ActiveControl.Name = "currentMacro" && this.macroList.FocusedIndex) ;Also works if other controls like the button were focused before.
+        if (this.macroList.FocusedIndex) ;Also works if other controls like the button were focused before.
         {   
             selectedRow := this.currentMacro.FocusedIndex
             ControlGet, pressedKeys, List, , % this.currentMacro.ClassNN, A ; Get all the keys from the listbox
@@ -177,10 +177,14 @@ Class MacroRecorder Extends CGUI
                 Menu, Macro, Disable, Edit
             Menu, Macro, Show
         }
-        else if (this.ActiveControl.Name = "macroList" && this.macroList.FocusedIndex)
-            Menu, MacroName, Show
     }
     
+    macroList_ContextMenu()
+    {
+        if (this.macroList.FocusedIndex)
+            Menu, MacroName, Show
+    }
+
     MacroName(Index)
     {
         ControlGet, macros, List, , % this.macroList.ClassNN, A ; Get all the keys from the listbox
