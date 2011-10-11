@@ -411,7 +411,6 @@ return
 DeleteKey:
     Gosub, GetData
     gui.keys.Items.Delete(selectedRow) ; Clear row
-
     if (type = "textblock")
         xml.Delete("textblocks", name) ; Remove textblock
 
@@ -450,7 +449,7 @@ GetData:
     key := Trim(gui.keys.Items[selectedRow][1])
     options := xml.GetAttribute(key)
     type := gui.keys.Items[selectedRow][2]
-    name := gui.keys.Items[selectedRow][4]
+    name := gui.keys.Items[selectedRow][3]
     repeat := gui.keys.Items[selectedRow][5]
 return
 

@@ -42,9 +42,9 @@ ProfileSwitcher:
     debug ? debug("Checking for different profile.")
     Loop % A_ScriptDir . "\Profiles\*.xml"
     {
-        FileRead, text, % A_LoopFileLongPath    
+        FileRead, text, % A_LoopFileLongPath
         RegExMatch(text, "`am)\<exe\>(.*)?\<", exe)
-        
+
         if (proccessExe = exe1)
         {
             debug ? debug("Found exe: " . SubStr(A_LoopFileName, 1, -4))
@@ -64,23 +64,23 @@ Return
 Pressed:
     hotkey := Trim(RegExReplace(A_ThisHotkey, "([\$\*\<\>\~]|(?<!_)Up)"))
     debug ? debug(hotkey . " pressed")
-    
+
     ; get all the info for the hotkey
     type := xml.Get("key", hotkey, "type")
     value := xml.Get("key", hotkey, "value")
     repeat := xml.Get("key", hotkey, "repeat")
-    
-    
+
+
     if (type = "textblock")
         delay := xml.Get("textblock", value, "delay")
     else if (type = "script")
         AhkScript.ahkFunction("OnEvent", hotkey, "Pressed", A_TimeSinceThisHotkey, currentXml)
-    
+
     if (repeat = "toggle")
     {
         toggle := !toggle
         if (!toggle)
-            return 
+            return
         while (toggle)
         {
             sleep, 10
@@ -91,7 +91,7 @@ Pressed:
     }
     else if (type != "script")
         HandleKey(type, value, delay)
-        
+
     if (type != "script" && repeat = "None")
         KeyWait % Hotkey
     else if (type = "script")
@@ -117,7 +117,7 @@ Hotkeys(disable = 0) {
 
 HandleKey(type, value, delay = -1) {
     text := xml.Get(type, value, "value")
-    
+
     if (type = "macro")
     {
         if (InStr(text, "Sleep"))
@@ -130,7 +130,7 @@ HandleKey(type, value, delay = -1) {
             text := "Send, " . text
             StringReplace, text, text, ``n, , all
         }
-        
+
         AhkSender.ahkExec(text) ; Send macro in a new thread.
     }
     else if (type = "textblock")
@@ -143,7 +143,7 @@ HandleKey(type, value, delay = -1) {
 }
 
 GetProfiles() {
-    Loop, % A_ScriptDir . "\Profiles\*.xml" 
+    Loop, % A_ScriptDir . "\Profiles\*.xml"
         profiles .= A_LoopFileName . "|"
     return profiles
 }
