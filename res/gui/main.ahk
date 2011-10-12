@@ -129,7 +129,7 @@ Class Main Extends CGUI
 
     EditSettings()
     {
-        this.Settings.Show()
+        this.Settings.Load(1)
     }
 
     EditProfile()

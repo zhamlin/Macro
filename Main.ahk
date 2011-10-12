@@ -30,7 +30,8 @@ AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
 
 PID := DllCall("GetCurrentProcessId")
-SetTimer, ProfileSwitcher, 100
+if (Ini.Settings.ProfileSwitching)
+    SetTimer, ProfileSwitcher, % Ini.Settings.ProfileDelay
 gui := new Main()
 return
 

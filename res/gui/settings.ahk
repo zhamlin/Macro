@@ -1,8 +1,8 @@
 Class settings Extends CGUI
 {
 
-    button1 := this.AddControl("Button", "button1", "x300 y341 w80 h26", "OK")
-    button2 := this.AddControl("Button", "button2", "x386 y341 w80 h26", "Cancel")
+    SettingsOK := this.AddControl("Button", "SettingsOK", "x300 y341 w80 h26", "OK")
+    SettingsCancel := this.AddControl("Button", "SettingsCancel", "x386 y341 w80 h26", "Cancel")
 
     Class tabControl1
     {
@@ -25,7 +25,12 @@ Class settings Extends CGUI
     __New(mainGui, owner)
     {
         this.Title := "Form1"
+        this.gui   := mainGui
+        this.Owner := owner, this.OwnerAutoClose := 1, this.MinimizeBox := 0
+        this.Load()
+    }
 
+    Load(show = 0) {
         checked := Ini.Settings.ProfileSwitching ? Ini.Settings.ProfileSwitching : 0
         delay   := Ini.Settings.ProfileDelay
         startup := Ini.Settings.runOnStartUp ? Ini.Settings.runOnStartUp : 0
@@ -34,11 +39,28 @@ Class settings Extends CGUI
         this.tabControl1.Tabs[2].Controls.settingsDelay.text    := delay
         this.tabControl1.Tabs[2].Controls.delayCheckbox.Checked := checked
         this.tabControl1.Tabs[1].Controls.startUp.Checked       := startup
+        if (show)
+        {
+            this.ChangeControls(Ini.Settings.ProfileSwitching)
+            this.Show()
+        }
+    }
 
-        this.gui := mainGui
-        this.Owner := owner, this.OwnerAutoClose := 1, this.MinimizeBox := 0
+    SettingsOK_Click() {
+        Ini.Save(A_ScriptDir . "\res\settings.ini")
+        RunOnStartUp(Ini.Settings.runOnStartUp, "Macro System")
 
-        this.DestroyOnClose := true ;By Setting this the window will destroy itself when the user cloeses it
+        if (Ini.Settings.ProfileSwitching)
+            SetTimer, ProfileSwitcher, % Ini.Settings.ProfileDelay
+        else
+            SetTimer, ProfileSwitcher, Off
+
+        this.Hide()
+    }
+
+    SettingsCancel_Click() {
+        Ini := new Ini(A_ScriptDir . "\res\settings.ini")
+        this.Hide()
     }
 
     tabControl1_Click(TabIndex)
@@ -68,10 +90,5 @@ Class settings Extends CGUI
         value := this.tabControl1.Tabs[2].Controls.delaySlider.Value
         this.tabControl1.Tabs[2].Controls.settingsDelay.text := value
         Ini.Settings.ProfileDelay := value
-    }
-
-    PreClose() {
-        Ini.Save(A_ScriptDir . "\res\settings.ini")
-        ExitApp
     }
 }
