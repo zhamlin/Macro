@@ -1,4 +1,5 @@
 *.exe
+*.ini
 
 lib/_doc/
 profiles/

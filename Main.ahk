@@ -7,7 +7,7 @@ SetBatchLines, -1
 ListLines, Off
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender
+global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender,
 
 args := arg()
 debug := 1 ;args[1]
@@ -21,6 +21,7 @@ currentXml := A_ScriptDir . "\Profiles\Default.xml"
 xml := new Xml(currentXml)
 xml.Save(A_ScriptDir . "\Profiles", "Default")
 
+Ini := new Ini(A_ScriptDir . "\res\settings.ini")
 ahkDll := A_ScriptDir . "\res\dll\AutoHotkey.dll"
 
 AhkRecorder := AhkDllThread(ahkDll)
@@ -42,6 +43,8 @@ ProfileSwitcher:
     debug ? debug("Checking for different profile.")
     Loop % A_ScriptDir . "\Profiles\*.xml"
     {
+        if (A_LoopFileName = "Default.xml")
+            Continue
         FileRead, text, % A_LoopFileLongPath
         RegExMatch(text, "`am)\<exe\>(.*)?\<", exe)
 
@@ -161,6 +164,7 @@ return
 
 #include <CGUI>
 #include <Xml>
+#include <ini>
 #include <Debug>
 
 #Include, %A_ScriptDir%\res\gui\macro recorder.ahk
@@ -168,3 +172,4 @@ return
 #Include, %A_ScriptDir%\res\gui\textBlock.ahk
 #Include, %A_ScriptDir%\res\gui\settings.ahk
 #Include, %A_ScriptDir%\res\gui\main.ahk
+#Include, %A_ScriptDir%\res\gui\settings.ahk

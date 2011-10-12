@@ -23,7 +23,8 @@ Class Main Extends CGUI
 
         Edit := New CMenu("Edit")
         Edit.AddMenuItem("Profile Properties", "EditProfile")
-        Edit.AddMenuItem("", "blash")
+        Edit.AddMenuItem("Settings", "EditSettings")
+        Edit.AddMenuItem("", "")
         Edit.AddMenuItem("Macro Manager", "EditMacro")
         this.Edit := Edit
 
@@ -73,6 +74,7 @@ Class Main Extends CGUI
         this.Macro := new MacroRecorder(this, this.hwnd)
         this.Profile := new Profile(this, this.hwnd)
         this.Textblock := new Textblock(this, this.hwnd)
+        this.Settings := new Settings(this, this.hwnd)
 
         SCI_SetLexer("SCLEX_AU3")
         SCI_StyleClearAll()
@@ -123,6 +125,11 @@ Class Main Extends CGUI
     ProfileOpen()
     {
         this.Profile.Show()
+    }
+
+    EditSettings()
+    {
+        this.Settings.Show()
     }
 
     EditProfile()
