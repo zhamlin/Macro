@@ -7,7 +7,7 @@ Class Profile Extends CGUI
         this.edtName := this.AddControl("Edit", "edtName", "x87 y6 w299 h23 ", "")
         this.radioBrowse := this.AddControl("Radio", "radioBrowse", "x33 y86 w329 h16 ", "Browse")
         this.radioSelect := this.AddControl("Radio", "radioSelect", "x33 y121 w327 h16 ", "Select using F12")
-        this.AddControl("GroupBox", "X", "x6 y62 w380 h159 ", "Select Game Executable")
+        this.AddControl("GroupBox", "X", "x6 y62 w380 h159 ", "Select Program Executable")
         this.edtExe := this.AddControl("Edit", "edtExe", "x55 y187 w278 h23 ", "")
         this.AddControl("Text", "Q", "x55 y144 w323 h29 ", "Run the program as the foreground window, then press F12.")
         this.btnOK := this.AddControl("Button", "btnOK", "x148 y224 w75 h23 ", "OK")
@@ -37,14 +37,14 @@ Class Profile Extends CGUI
     {
         this.OwnDialogs := 1 ; For file select dialog
         file := new CFileDialog(), file.FileMustExist := 1
-        file.Filter := "Game (*.exe)"
+        file.Filter := "Program (*.exe)"
         if ( file.show() )
             this.edtExe.Text := file.FileName
     }
     
     radioSelect_CheckedChanged()
     {
-        SplashTextOn, 200, 50, , Press F12 to select game`nPress ESC to cancel
+        SplashTextOn, 200, 50, , Press F12 to select program`nPress ESC to cancel
         ; Set up hotkeys for selecting executable.
         Hotkey, F12, SelectExe, On
         Hotkey, Esc, SelectExe, On

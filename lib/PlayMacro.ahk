@@ -10,7 +10,7 @@ PlayMacro(macro, profile) {
     {
         if (!A_LoopField)
             Continue
-        if (InStr(A_LoopField, "Sleep,"))
+        else if (InStr(A_LoopField, "Sleep,"))
         {
             Send % sendString
             sendString := ""

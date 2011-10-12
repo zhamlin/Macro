@@ -15,19 +15,19 @@ Class Textblock Extends CGUI
         this.btnOK := this.AddControl("Button", "btnOK", "x87 y465 w75 h23 ", "OK")
         this.AddControl("Button", "btnCancel", "x168 y465 w75 h23 ", "Cancel")
         this.AddControl("Button", "l", "x348 y465 w75 h23 ", "Help")
-        
+
         this.edtDelay.Disable()
         this.txtDelay.Disable()
         this.btnOK.Disable()
-        
+
         this.gui := mainGui
         if (owner)
             this.Owner := owner, this.OwnerAutoClose := 1, this.MinimizeBox := 0
-        
+
         this.Toolwindow := 1
 		this.Title := "Text Block Manager"
 	}
-    
+
     edtName_TextChanged()
     {
         ; Checking if the edit has text in it.
@@ -49,35 +49,35 @@ Class Textblock Extends CGUI
             this.txtDelay.Disable()
         }
     }
-    
+
     btnClear_Click()
     {
         this.edtText.text := ""
     }
-    
+
     btnCancel_Click()
     {
         debug ? debug("Hiding textblock gui")
         this.Hide()
     }
-    
+
     btnOK_Click()
     {
         name := this.edtName.text
         text := this.edtText.text
-        
+
         ; Checking to see if the delay is checked and has a value.
         if (this.edtDelay.Text && this.chkDelay.Checked)
             delay := this.edtDelay.Text
         else
             delay := -1
         firstChar := SubStr(name, 1, 1)
-        
-        if (InStr(name, A_Space)) 
+
+        if (InStr(name, A_Space))
         {
             MsgBox, 48, , No spaces allowed in name.
             return
-        }     
+        }
         else if firstChar is not Alpha
         {
             MsgBox, 48, , Macro names must start with a letter.
@@ -89,26 +89,26 @@ Class Textblock Extends CGUI
         StringReplace, text, text, `n, ``n, All ; Change newlines to `n for storage in xml
         xml.AddText(name, text, delay)
         xml.Save(A_ScriptDir . "\Profiles", xml.Get("name")) ; Save xml file.
-        
+
         this.name := name
         this.edtName.text := "", this.edtText.text := "", this.editDelay := -1
         this.Hide()
-        
+
         selectedRow := this.gui.keys.FocusedIndex
         key := this.gui.keys.Items[selectedRow][1]
         options := xml.GetAttribute(key)
         type := this.gui.keys.Items[selectedRow][2]
         repeat := this.gui.keys.Items[selectedRow][5]
-        
+
         debug ? debug("Created textblock: " . name . " for key: " . key)
-        
+
         xml.AddKey(key, "Textblock", this.name, options, repeat)
         StringReplace, options, options, % key
-        this.gui.keys.Items.Modify(selectedRow, "", key, "Textblock", options, this.name, repeat)
+        this.gui.keys.Items.Modify(selectedRow, "", key, "Textblock", this.name, options, repeat)
         xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
         Hotkeys()
     }
-    
+
     Load(textblockName)
     {
         this.Done := 0
@@ -118,13 +118,13 @@ Class Textblock Extends CGUI
             this.Show()
             return
         }
-        
+
         text := xml.Get("textblock", textblockName, "value")
         Transform, text, Deref, % text ; turn ``n into actual new lines
         this.edtText.text := text
         this.edtName.Text := textblockName
         delay := xml.Get("textblock", textblockName, "delay")
-        
+
         if (delay > 0)
         {
             ; Enable Delay edit box
@@ -136,5 +136,5 @@ Class Textblock Extends CGUI
         debug ? debug("Loaded textblock: " . textblockName)
         this.Show()
     }
-    
+
 }
