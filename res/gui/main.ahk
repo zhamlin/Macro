@@ -8,10 +8,10 @@ Class Main Extends CGUI
 
         this.AddControl("Text", "txtProfile", "x302 y12 w150 h15 ", "Current Profile:")
         this.drpProfiles := this.AddControl("DropDownList", "drpProfiles", "x380 y8 w430 h400 vDropDownList", "")
-        this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x330 y372 w75 h23 ", "&Add")
+        this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x730 y372 w75 h23 ", "&Add")
         this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h317 Grid", "Key                |Type           |Name          |Options|Repeat") ;w780
 
-        this.tabControl.tabs[2].AddControl("Button", "btnSave", "x400 y390 w75 h23 ", "&Save")
+        this.tabControl.tabs[2].AddControl("Button", "btnSave", "x730 y390 w75 h23 ", "&Save")
 
         this.MenuBar := New CMenu("Main")
         ProfileMenu := New CMenu("ProfileMenu")
@@ -159,7 +159,7 @@ Class Main Extends CGUI
                 Sleep, 10
 
             if (!script)
-                SCI_SetText(script := ";Key = key pressed`n;Event = Can be Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}")
+                SCI_SetText(script := ";Key = key pressed`n;Event = Can be Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}")
 
             AhkScript.addScript(script)
 
@@ -186,7 +186,7 @@ Class Main Extends CGUI
         repeat := this.keys.Items[selectedRow][5]
         type := this.keys.Items[selectedRow][2]
 
-        if (type = "script" || "disabled")
+        if (type = "script" || type = "disabled" || type = "")
         {
             Menu, Options, Disable, Toggle
             Menu, Options, Disable, Pressed
@@ -308,7 +308,7 @@ Class Main Extends CGUI
         FileRead, script, % A_ScriptDir . "\res\scripts\" . name . ".ahk"
 
         if (!script)
-            script := ";Key = key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}"
+            script := ";Key = key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}"
 
         AhkScript.ahkTerminate("")
         ScriptThread := AhkScript.ahktextdll("#Persistent`n#NoTrayIcon`nSetWorkingDir, " . A_ScriptDir . "\`n")
