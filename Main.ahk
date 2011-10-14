@@ -32,9 +32,11 @@ AhkSender.ahkTextDll("")
 OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
 
 PID := DllCall("GetCurrentProcessId")
+gui := new Main()
+
 if (Ini.Settings.ProfileSwitching)
     SetTimer, ProfileSwitcher, % Ini.Settings.ProfileDelay
-gui := new Main()
+
 return
 
 ProfileSwitcher:

@@ -72,10 +72,16 @@ Class Profile Extends CGUI
             IfMsgBox, No
                 return
         }
-        else if (this.Loaded)
+        if (this.Loaded)
+        {
+            FileRead, xmlValue, % this.savedProfile
             FileDelete % this.savedProfile
+        }
 
         currentXml := A_ScriptDir . "\Profiles\" . name . ".xml"
+        if (xmlValue)
+            FileAppend, % xmlValue, % currentXml
+
         xml := New Xml(currentXml)
         exe := this.edtExe.Text
 
@@ -84,8 +90,10 @@ Class Profile Extends CGUI
         xml.Set("name", name)
         xml.Save(A_ScriptDir . "\Profiles\", name) ; Save xml file.
 
+        ; Clear value from edit boxs.
         this.edtName.Text := "", this.edtExe.Text := "", this.Loaded := 0
         this.Hide()
+
         debug ? debug("Created profile: " name)
         this.gui.LoadProfiles()
         Control, ChooseString, % name, % this.gui.drpProfiles.ClassNN, A

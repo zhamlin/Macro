@@ -21,8 +21,6 @@ Class Xml
                     </macros>
                     <textblocks>
                     </textblocks>
-                    <scripts>
-                    </scripts>
                  </profile>
             )
         }
