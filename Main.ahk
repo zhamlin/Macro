@@ -7,7 +7,7 @@ SetBatchLines, -1
 ListLines, Off
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
 
-global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender,
+global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender, Ini
 
 args := arg()
 debug := 1 ;args[1]
@@ -28,6 +28,8 @@ AhkRecorder := AhkDllThread(ahkDll)
 AhkSender := AhkDllThread(ahkDll)
 AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
+
+OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
 
 PID := DllCall("GetCurrentProcessId")
 if (Ini.Settings.ProfileSwitching)
@@ -152,6 +154,15 @@ GetProfiles() {
     return profiles
 }
 
+
+AHK_NOTIFYICON(wParam, lParam) {
+    global gui
+    if lParam = 0x201 ; WM_LBUTTONUP
+        return
+    else if lParam = 0x203 ; WM_LBUTTONDBLCLK
+        gui.Show()
+
+}
 
 Install:
     debug ? debug("Installing files")

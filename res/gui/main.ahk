@@ -9,7 +9,7 @@ Class Main Extends CGUI
         this.AddControl("Text", "txtProfile", "x302 y12 w150 h15 ", "Current Profile:")
         this.drpProfiles := this.AddControl("DropDownList", "drpProfiles", "x380 y8 w430 h400 vDropDownList", "")
         this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x330 y372 w75 h23 ", "&Add")
-        this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h317 Grid", "Key       |Type           |Name          |Options|Repeat")
+        this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h317 Grid", "Key                |Type           |Name          |Options|Repeat") ;w780
 
         this.tabControl.tabs[2].AddControl("Button", "btnSave", "x400 y390 w75 h23 ", "&Save")
 
@@ -162,7 +162,8 @@ Class Main Extends CGUI
                 SCI_SetText(script := ";Key = key pressed`n;Event = Can be Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0, currentProfile = """") {`n`n}")
 
             AhkScript.addScript(script)
-            xml.AddScript(script)
+
+            ;xml.AddScript(script)
 
             FileDelete % A_ScriptDir . "\res\scripts\" . name . ".ahk"
             FileAppend, % script, % A_ScriptDir . "\res\scripts\" . name . ".ahk"
