@@ -66,7 +66,7 @@ Class Profile Extends CGUI
             MsgBox, 48, , Profile name can not be "Default".
             return
         }
-        else if (FileExist(A_ScriptDir . "\Profiles\" . name . ".xml")) ; Profile already exists.
+        else if (FileExist(A_ScriptDir . "\res\Profiles\" . name . ".xml")) ; Profile already exists.
         {
             MsgBox, 52, , Profile already exists.`nWould you like to overwrite it?
             IfMsgBox, No
@@ -78,7 +78,7 @@ Class Profile Extends CGUI
             FileDelete % this.savedProfile
         }
 
-        currentXml := A_ScriptDir . "\Profiles\" . name . ".xml"
+        currentXml := A_ScriptDir . "\res\Profiles\" . name . ".xml"
         if (xmlValue)
             FileAppend, % xmlValue, % currentXml
 
@@ -88,7 +88,7 @@ Class Profile Extends CGUI
         ; Update values in xml file.
         xml.Set("exe", exe)
         xml.Set("name", name)
-        xml.Save(A_ScriptDir . "\Profiles\", name) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\", name) ; Save xml file.
 
         ; Clear value from edit boxs.
         this.edtName.Text := "", this.edtExe.Text := "", this.Loaded := 0

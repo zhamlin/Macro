@@ -17,9 +17,9 @@ version := 0.4
 if (!FileExist(A_ScriptDir . "\res"))
     Gosub, Install
 
-currentXml := A_ScriptDir . "\Profiles\Default.xml"
+currentXml := A_ScriptDir . "\res\Profiles\Default.xml"
 xml := new Xml(currentXml)
-xml.Save(A_ScriptDir . "\Profiles", "Default")
+xml.Save(A_ScriptDir . "\res\Profiles", "Default")
 
 Ini := new Ini(A_ScriptDir . "\res\settings.ini")
 ahkDll := A_ScriptDir . "\res\dll\AutoHotkey.dll"
@@ -46,7 +46,7 @@ ProfileSwitcher:
     if (proccessExe = lastExe)
         return
     debug ? debug("Checking for different profile.")
-    Loop % A_ScriptDir . "\Profiles\*.xml"
+    Loop % A_ScriptDir . "\res\Profiles\*.xml"
     {
         if (A_LoopFileName = "Default.xml")
             Continue
@@ -64,7 +64,7 @@ ProfileSwitcher:
             break
         }
     }
-    if (currentXml != A_ScriptDir . "\Profiles\Default.xml" && !switchedProfile)
+    if (currentXml != A_ScriptDir . "\res\Profiles\Default.xml" && !switchedProfile)
         Control, ChooseString, Default, % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
     lastExe := proccessExe, switchedProfile := 0
 Return
@@ -151,7 +151,7 @@ HandleKey(type, value, delay = -1) {
 }
 
 GetProfiles() {
-    Loop, % A_ScriptDir . "\Profiles\*.xml"
+    Loop, % A_ScriptDir . "\res\Profiles\*.xml"
         profiles .= A_LoopFileName . "|"
     return profiles
 }
@@ -169,10 +169,12 @@ AHK_NOTIFYICON(wParam, lParam) {
 Install:
     debug ? debug("Installing files")
     FileCreateDir, % A_ScriptDir . "\res"
+    FileCreateDir, % A_ScriptDir . "\res\dll"
     FileCreateDir, % A_ScriptDir . "\res\scripts"
-    FileCreateDir, % A_ScriptDir . "\profiles"
-    FileInstall, res\AutoHotkey.dll, res\AutoHotkey.dll
-    FileInstall, res\Recorder.ahk, res\Recorder.ahk
+    FileCreateDir, % A_ScriptDir . "\res\profiles"
+    FileInstall, res\dll\AutoHotkey.dll, res\dll\AutoHotkey.dll
+    FileInstall, res\dll\SciLexer.dll, res\dll\SciLexer.dll
+    FileInstall, res\gui\Recorder.ahk, res\gui\Recorder.ahk
 return
 
 

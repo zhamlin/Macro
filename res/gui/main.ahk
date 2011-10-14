@@ -237,7 +237,7 @@ Class Main Extends CGUI
             this.ProfileMenu[2].Enabled := true
         }
         debug ? debug("Changed profile to: " . selectedText)
-        this.LoadProfile(A_ScriptDir . "\Profiles\" . selectedText . ".xml")
+        this.LoadProfile(A_ScriptDir . "\res\Profiles\" . selectedText . ".xml")
     }
 
     btnAdd_Click()
@@ -255,7 +255,7 @@ Class Main Extends CGUI
 
         this.keys.Items.Add("", key, "", "", optionsWithoutKey, "None")
         xml.AddKey(key, "", "", options)
-        xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
     }
 
     LoadProfiles()
@@ -389,7 +389,7 @@ AssignMacro:
     gui.keys.Items.Modify(selectedRow, "", key, "Macro", A_ThisMenuItem, options)
     if (type = "textblock")
         xml.Delete("textblocks", name) ; Remove textblock
-    xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
     debug ? debug("Assigned macro: " . A_ThisMenuItem . " to key: " . key)
     Hotkeys()
 return
@@ -411,7 +411,7 @@ AssignScript:
     StringReplace, options, options, % key
     gui.keys.Items.Modify(selectedRow, "", key, "Script", "Script", options, "None")
 
-    xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
     debug ? debug("Assigned Script to key: " . key)
     Hotkeys()
 return
@@ -423,7 +423,7 @@ DeleteKey:
         xml.Delete("textblocks", name) ; Remove textblock
 
     xml.Delete("keys", key)
-    xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
     debug ? debug("Deleted key: " . key)
 return
 
@@ -434,7 +434,7 @@ DisableKey:
     xml.AddKey(key, "Disabled", "Disabled", options)
 
     gui.keys.Items.Modify(selectedRow, "", key, "Disabled", "None")
-    xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
 
     debug ? debug("Disabled key:" . key)
     Hotkeys()
@@ -446,7 +446,7 @@ Options:
     StringReplace, options, options, % key
 
     gui.keys.Items.Modify(selectedRow, "", key, type, Name, options, A_ThisMenuItem)
-    xml.Save(A_ScriptDir . "\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
 
     debug ? debug("Changed:" . key . "'s options")
     Hotkeys()

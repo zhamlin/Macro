@@ -2,5 +2,5 @@
 *.ini
 
 lib/_doc/
-profiles/
+res/profiles/
 res/scripts/
