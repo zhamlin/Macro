@@ -13,18 +13,13 @@ Class settings Extends CGUI
         {
             this.Tabs[1].AddControl("GroupBox", "groupBox1", "x28 y42 w434 h82", "Startup")
             this.startUp := this.Tabs[1].AddControl("CheckBox", "startUp", "x71 y61 w93 h17", "Run at startup")
-            this.Tabs[2].AddControl("GroupBox", "groupBox2", "x28 y42 w434 h103", "")
-            this.delaySlider := this.Tabs[2].AddControl("Slider", "delaySlider", "x52 y63 w392 h25 Range1-10000 TickInterval500", "")
-
-            this.Tabs[2].AddControl("Text", "settingsText", "x94 y98 w110 h25", "Delay in milliseconds`nbetween checks")
-            this.settingsDelay := this.Tabs[2].AddControl("Edit", "settingsDelay", "x204 y100 w100 h20 Number Limit5", "")
             this.delayCheckbox := this.Tabs[2].AddControl("CheckBox", "delayCheckbox", "x44 y42 w104 h17", "Profile Switching")
         }
     }
 
     __New(mainGui, owner)
     {
-        this.Title := "Form1"
+        this.Title := "Settings"
         this.gui   := mainGui
         this.Owner := owner, this.OwnerAutoClose := 1, this.MinimizeBox := 0
         this.Load()
@@ -50,17 +45,19 @@ Class settings Extends CGUI
         Ini.Save(A_ScriptDir . "\res\settings.ini")
         RunOnStartUp(Ini.Settings.runOnStartUp, "Macro System")
 
-        if (Ini.Settings.ProfileSwitching)
-            SetTimer, ProfileSwitcher, % Ini.Settings.ProfileDelay
-        else
-            SetTimer, ProfileSwitcher, Off
-
         this.Hide()
     }
 
     SettingsCancel_Click() {
         Ini := new Ini(A_ScriptDir . "\res\settings.ini")
         this.Hide()
+    }
+
+    settingsDelay_TextChanged() {
+        ControlGetText, value, Edit1, A
+        if (!value)
+            value := 1
+        this.tabControl1.Tabs[2].Controls.delaySlider.Value := value
     }
 
     tabControl1_Click(TabIndex)

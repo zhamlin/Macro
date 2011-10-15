@@ -34,40 +34,10 @@ OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
 PID := DllCall("GetCurrentProcessId")
 gui := new Main()
 
-if (Ini.Settings.ProfileSwitching)
-    SetTimer, ProfileSwitcher, % Ini.Settings.ProfileDelay
-
+DllCall( "RegisterShellHookWindow", UInt, gui.hwnd )
+MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" )
+OnMessage( MsgNum, "WindowActivated" )
 return
-
-ProfileSwitcher:
-    IfWinActive, ahk_pid %PID%
-        return
-    WinGet, proccessExe, ProcessPath, A
-    if (proccessExe = lastExe)
-        return
-    debug ? debug("Checking for different profile.")
-    Loop % A_ScriptDir . "\res\Profiles\*.xml"
-    {
-        if (A_LoopFileName = "Default.xml")
-            Continue
-        FileRead, text, % A_LoopFileLongPath
-        RegExMatch(text, "`am)\<exe\>(.*)?\<", exe)
-
-        if (proccessExe = exe1)
-        {
-            debug ? debug("Found exe: " . SubStr(A_LoopFileName, 1, -4))
-            if (currentXml != A_LoopFileLongPath)
-            {
-                Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
-                switchedProfile := 1
-            }
-            break
-        }
-    }
-    if (currentXml != A_ScriptDir . "\res\Profiles\Default.xml" && !switchedProfile)
-        Control, ChooseString, Default, % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
-    lastExe := proccessExe, switchedProfile := 0
-Return
 
 Pressed:
     hotkey := Trim(RegExReplace(A_ThisHotkey, "([\$\*\<\>\~]|(?<!_)Up)"))
@@ -110,6 +80,35 @@ Pressed:
     }
 Return
 
+WindowActivated( wParam,lParam ) {
+    global PID, gui
+    ; Check to make sure that profile switching is on
+    ; , the current window is not the script , and that the message was for a window being activated.
+    if (wParam != 32772 || !Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
+        return
+    WinGet, proccessExe, ProcessPath, A
+    debug ? debug("Checking for different profile.")
+    Loop % A_ScriptDir . "\res\Profiles\*.xml"
+    {
+        if (A_LoopFileName = "Default.xml")
+            Continue
+        FileRead, text, % A_LoopFileLongPath
+        RegExMatch(text, "`am)\<exe\>(.*)?\<", exe)
+
+        if (proccessExe = exe1)
+        {
+            debug ? debug("Found exe: " . SubStr(A_LoopFileName, 1, -4))
+            Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
+            switchedProfile := 1
+            break
+        }
+    }
+    if (currentXml != A_ScriptDir . "\res\Profiles\Default.xml" && !switchedProfile)
+        Control, ChooseString, Default, % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
+    switchedProfile := 0
+}
+
+
 Hotkeys(disable = 0) {
     debug ? debug("Turning " . (disable ? "off" : "on") . " hotkeys")
     keys := xml.List("keys", "|")
@@ -126,7 +125,9 @@ Hotkeys(disable = 0) {
 HandleKey(type, value, delay = -1) {
     text := xml.Get(type, value, "value")
 
-    if (type = "macro")
+    if (!text)
+        return
+    else if (type = "macro")
     {
         if (InStr(text, "Sleep"))
         {
@@ -138,7 +139,6 @@ HandleKey(type, value, delay = -1) {
             text := "Send, " . text
             StringReplace, text, text, ``n, , all
         }
-
         AhkSender.ahkExec(text) ; Send macro in a new thread.
     }
     else if (type = "textblock")

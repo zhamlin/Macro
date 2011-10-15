@@ -3,15 +3,18 @@ Class Main Extends CGUI
 
     __New()
     {
+        this.AddControl("Button", "btnHelp", "x730 y390 w75 h23 ", "&Help")
+        this.AddControl("Button", "btnOK", "x570 y390 w75 h23 ", "&OK")
         this.AddControl("Text", "txtVersion", "x785 y420 w22 h20 ", "v" . version)
         this.tabControl := this.AddControl("Tab", "tabControl", "x12 y10 w800 h410 hwndTabControl1", "Keys|Script")
 
         this.AddControl("Text", "txtProfile", "x302 y12 w150 h15 ", "Current Profile:")
         this.drpProfiles := this.AddControl("DropDownList", "drpProfiles", "x380 y8 w430 h400 vDropDownList", "")
-        this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x730 y372 w75 h23 ", "&Add")
-        this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h317 Grid", "Key                |Type           |Name          |Options|Repeat") ;w780
+        this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x650 y390 w75 h23 ", "&Add")
+        ;this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x730 y390 w75 h23 ", "&Add")
+        this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h340 Grid", "Key                |Type           |Name          |Options|Repeat") ;w780
 
-        this.tabControl.tabs[2].AddControl("Button", "btnSave", "x730 y390 w75 h23 ", "&Save")
+        this.tabControl.tabs[2].AddControl("Button", "btnSave", "x650 y390 w75 h23 ", "&Save")
 
         this.MenuBar := New CMenu("Main")
         ProfileMenu := New CMenu("ProfileMenu")
@@ -63,7 +66,6 @@ Class Main Extends CGUI
         this.Title := "Main Gui"
         this.Show("h440 w820")
 
-        ControlGet, Tabhwnd, Hwnd,, % this.tabControl.ClassNN
         ; Add scintilla control to tab.
         this.hSci := SCI_Add(this.hwnd, 22, 38, 780, 340, "Child Border Visible GROUP TABSTOP ", "", A_ScriptDir . "\res\dll\scilexer.dll")
         Control, Hide,,, % "ahk_id" this.hSci
@@ -122,6 +124,11 @@ Class Main Extends CGUI
         debug ? debug("Deleted profile: " . currentXml)
     }
 
+    btnOK_Click()
+    {
+        this.Hide()
+    }
+
     ProfileOpen()
     {
         this.Profile.Show()
@@ -159,7 +166,7 @@ Class Main Extends CGUI
                 Sleep, 10
 
             if (!script)
-                SCI_SetText(script := ";Key = key pressed`n;Event = Can be Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}")
+                SCI_SetText(script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}")
 
             AhkScript.addScript(script)
 
@@ -308,7 +315,7 @@ Class Main Extends CGUI
         FileRead, script, % A_ScriptDir . "\res\scripts\" . name . ".ahk"
 
         if (!script)
-            script := ";Key = key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}"
+            script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}"
 
         AhkScript.ahkTerminate("")
         ScriptThread := AhkScript.ahktextdll("#Persistent`n#NoTrayIcon`nSetWorkingDir, " . A_ScriptDir . "\`n")
