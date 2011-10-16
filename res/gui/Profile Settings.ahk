@@ -49,9 +49,9 @@ Class Profile Extends CGUI
 
     radioHotkey_CheckedChanged()
     {
-        Hotkey, F12, SelectExe
-        Hotkey, Escape, SelectExe
-        SplashTextOn, 230, 30, Select Program, Activate the program and press F12
+        Hotkey, F12, SelectExe, On
+        Hotkey, Escape, SelectExe, On
+        SplashTextOn, 230, 50, Select Program, Activate the program and press F12`nPress Esc to cancel
     }
 
     btnCanel_Click()

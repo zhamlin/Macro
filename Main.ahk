@@ -86,7 +86,7 @@ WindowActivated( wParam,lParam ) {
     ; , the current window is not the script , and that the message was for a window being activated.
     if (wParam != 32772 || !Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
         return
-    WinGet, proccessExe, ProcessPath, A
+    WinGet, proccessExe, ProcessPath, % "ahk_id " lParam
     debug ? debug("Checking for different profile.")
     Loop % A_ScriptDir . "\res\Profiles\*.xml"
     {
@@ -97,7 +97,6 @@ WindowActivated( wParam,lParam ) {
 
         if (proccessExe = exe1)
         {
-            debug ? debug("Found exe: " . SubStr(A_LoopFileName, 1, -4))
             Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
             switchedProfile := 1
             break
