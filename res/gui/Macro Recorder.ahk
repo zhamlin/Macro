@@ -7,6 +7,7 @@ Class MacroRecorder Extends CGUI
         this.btnCancel := this.AddControl("Button", "btnCancel", "x462 y400 w90 h23", "Cancel")
         this.btnDelete := this.AddControl("Button", "btnDelete", "x110 y380 w90 h23", "Delete")
         this.btnOK := this.AddControl("Button", "btnOK", "x362 y400 w90 h23", "OK")
+        this.btnOK := this.AddControl("Button", "btnHelp", "x562 y400 w90 h23", "Help")
 
         this.btnStartRecord := this.AddControl("Button", "btnStartRecord", "x525 y50 w90 h23", "Start Recording")
         this.btnStopRecord := this.AddControl("Button", "btnStopRecord", "x525 y25 w90 h23", "Stop Recording")

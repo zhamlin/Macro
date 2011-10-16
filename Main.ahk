@@ -12,7 +12,7 @@ global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, 
 args := arg()
 debug := 1 ;args[1]
 debugFile := args[2]
-version := 0.4
+version := 0.5
 
 if (!FileExist(A_ScriptDir . "\res"))
     Gosub, Install
@@ -40,7 +40,7 @@ OnMessage( MsgNum, "WindowActivated" )
 return
 
 Pressed:
-    hotkey := Trim(RegExReplace(A_ThisHotkey, "([\$\*\<\>\~]|(?<!_)Up)"))
+    hotkey := Trim(RegExReplace(A_ThisHotkey, "([\$\*\<\>\~\#\!\^\+]|(?<!_)Up)"))
     debug ? debug(hotkey . " pressed")
 
     ; get all the info for the hotkey
@@ -189,3 +189,4 @@ return
 #Include, %A_ScriptDir%\res\gui\settings.ahk
 #Include, %A_ScriptDir%\res\gui\main.ahk
 #Include, %A_ScriptDir%\res\gui\settings.ahk
+#Include, %A_ScriptDir%\res\gui\windows.ahk

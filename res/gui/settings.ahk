@@ -13,6 +13,7 @@ Class settings Extends CGUI
         {
             this.Tabs[1].AddControl("GroupBox", "groupBox1", "x28 y42 w434 h82", "Startup")
             this.startUp := this.Tabs[1].AddControl("CheckBox", "startUp", "x71 y61 w93 h17", "Run at startup")
+
             this.delayCheckbox := this.Tabs[2].AddControl("CheckBox", "delayCheckbox", "x44 y42 w104 h17", "Profile Switching")
         }
     }
@@ -27,18 +28,13 @@ Class settings Extends CGUI
 
     Load(show = 0) {
         checked := Ini.Settings.ProfileSwitching ? Ini.Settings.ProfileSwitching : 0
-        delay   := Ini.Settings.ProfileDelay
         startup := Ini.Settings.runOnStartUp ? Ini.Settings.runOnStartUp : 0
-
-        this.tabControl1.Tabs[2].Controls.delaySlider.Value     := delay
-        this.tabControl1.Tabs[2].Controls.settingsDelay.text    := delay
         this.tabControl1.Tabs[2].Controls.delayCheckbox.Checked := checked
         this.tabControl1.Tabs[1].Controls.startUp.Checked       := startup
         if (show)
-        {
-            this.ChangeControls(Ini.Settings.ProfileSwitching)
+
             this.Show()
-        }
+
     }
 
     SettingsOK_Click() {
@@ -53,19 +49,6 @@ Class settings Extends CGUI
         this.Hide()
     }
 
-    settingsDelay_TextChanged() {
-        ControlGetText, value, Edit1, A
-        if (!value)
-            value := 1
-        this.tabControl1.Tabs[2].Controls.delaySlider.Value := value
-    }
-
-    tabControl1_Click(TabIndex)
-    {
-        if (tabIndex.Text = "Profile")
-            this.ChangeControls(Ini.Settings.ProfileSwitching)
-    }
-
     startUp_CheckedChanged() {
         checked := this.tabControl1.Tabs[1].Controls.startUp.Checked
         Ini.Settings.runOnStartUp := checked
@@ -75,17 +58,5 @@ Class settings Extends CGUI
         checked := this.tabControl1.Tabs[2].Controls.delayCheckbox.Checked
         this.ChangeControls(checked)
         Ini.Settings.ProfileSwitching := checked
-    }
-
-    ChangeControls(Enabled = 0) {
-        this.tabControl1.Tabs[2].Controls.delaySlider.Enabled   := Enabled
-        this.tabControl1.Tabs[2].Controls.settingsDelay.Enabled := Enabled
-        this.tabControl1.Tabs[2].Controls.settingsText.Enabled  := Enabled
-    }
-
-    delaySlider_SliderMoved() {
-        value := this.tabControl1.Tabs[2].Controls.delaySlider.Value
-        this.tabControl1.Tabs[2].Controls.settingsDelay.text := value
-        Ini.Settings.ProfileDelay := value
     }
 }

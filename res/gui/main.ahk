@@ -12,7 +12,7 @@ Class Main Extends CGUI
         this.drpProfiles := this.AddControl("DropDownList", "drpProfiles", "x380 y8 w430 h400 vDropDownList", "")
         this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x650 y390 w75 h23 ", "&Add")
         ;this.tabControl.tabs[1].AddControl("Button", "btnAdd", "x730 y390 w75 h23 ", "&Add")
-        this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h340 Grid", "Key                |Type           |Name          |Options|Repeat") ;w780
+        this.keys := this.tabControl.tabs[1].AddControl("ListView", "keys", "x22 y38 w780 h340 Grid -LV0x10", "Key                |Type           |Name          |Options|Repeat") ;w780
 
         this.tabControl.tabs[2].AddControl("Button", "btnSave", "x650 y390 w75 h23 ", "&Save")
 
@@ -77,6 +77,7 @@ Class Main Extends CGUI
         this.Profile := new Profile(this, this.hwnd)
         this.Textblock := new Textblock(this, this.hwnd)
         this.Settings := new Settings(this, this.hwnd)
+        this.Windows := new Windows(this, this.hwnd)
 
         SCI_SetLexer("SCLEX_AU3")
         SCI_StyleClearAll()
@@ -256,13 +257,13 @@ Class Main Extends CGUI
         else if options in %keys%
             return
 
-        key := Trim(RegExReplace(options, "([\*\<\>\~]|(?<!_)Up)"))
+        key := Trim(RegExReplace(options, "i)([\*\<\>\~\#\^\!\+]|(?<!_)Up)"))
         StringReplace, optionsWithoutKey, options, % key, % A_Space
         debug ? debug("Addied key: " . key)
-
         this.keys.Items.Add("", key, "", "", optionsWithoutKey, "None")
         xml.AddKey(key, "", "", options)
         xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+        Hotkeys()
     }
 
     LoadProfiles()
@@ -306,7 +307,7 @@ Class Main Extends CGUI
             repeat := xml.Get("key", A_LoopField, "repeat")
             options := xml.GetAttribute(A_LoopField)
 
-            key := Trim(RegExReplace(options, "([\*\<\>\~]|(?<!_)Up)"))
+            key := Trim(RegExReplace(options, "([\*\<\>\~\#\!\^\+]|(?<!_)Up)"))
             StringReplace, options, options, % key, % A_Space
 
             this.keys.Items.Add("", key, type, value, options, repeat)
