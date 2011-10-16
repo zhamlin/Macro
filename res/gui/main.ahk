@@ -341,6 +341,7 @@ Class Main Extends CGUI
         xml.AddKey(key, "Macro", macroName, options, "None")
         StringReplace, options, options, % key
         this.keys.Items.Modify(selectedRow, "", key, "Macro",  macroName, options)
+        xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
         Hotkeys()
     }
 
