@@ -32,7 +32,6 @@ Class settings Extends CGUI
         this.tabControl1.Tabs[2].Controls.delayCheckbox.Checked := checked
         this.tabControl1.Tabs[1].Controls.startUp.Checked       := startup
         if (show)
-
             this.Show()
 
     }
@@ -41,11 +40,13 @@ Class settings Extends CGUI
         Ini.Save(A_ScriptDir . "\res\settings.ini")
         RunOnStartUp(Ini.Settings.runOnStartUp, "Macro System")
 
+        this.gui.Enabled := true
         this.Hide()
     }
 
     SettingsCancel_Click() {
         Ini := new Ini(A_ScriptDir . "\res\settings.ini")
+        this.gui.Enabled := true
         this.Hide()
     }
 
@@ -58,5 +59,9 @@ Class settings Extends CGUI
         checked := this.tabControl1.Tabs[2].Controls.delayCheckbox.Checked
         this.ChangeControls(checked)
         Ini.Settings.ProfileSwitching := checked
+    }
+
+    PreClose() {
+        this.gui.Enabled := true
     }
 }

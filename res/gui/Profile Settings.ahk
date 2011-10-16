@@ -45,6 +45,7 @@ Class Profile Extends CGUI
     radioSelect_CheckedChanged()
     {
         this.gui.Windows.Load()
+        this.Enabled := false
     }
 
     radioHotkey_CheckedChanged()
@@ -58,6 +59,7 @@ Class Profile Extends CGUI
     {
         this.Loaded := 0
         this.edtName.Text := "", this.edtExe.Text := ""
+        this.gui.Enabled := true
         this.Hide()
         debug ? debug("Canceled profile creation")
     }
@@ -96,8 +98,8 @@ Class Profile Extends CGUI
 
         ; Clear value from edit boxs.
         this.edtName.Text := "", this.edtExe.Text := "", this.Loaded := 0
+        this.gui.Enabled := true
         this.Hide()
-
         debug ? debug("Created profile: " name)
         this.gui.LoadProfiles()
         Control, ChooseString, % name, % this.gui.drpProfiles.ClassNN, A
@@ -112,6 +114,10 @@ Class Profile Extends CGUI
         this.Loaded := 1
         debug ? debug("Loaded profile: " . name)
         this.Show()
+    }
+
+    PreClose() {
+        this.gui.Enabled := true
     }
 
 }

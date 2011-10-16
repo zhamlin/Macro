@@ -133,20 +133,24 @@ Class Main Extends CGUI
     ProfileOpen()
     {
         this.Profile.Show()
+        this.Enabled := false
     }
 
     EditSettings()
     {
         this.Settings.Load(1)
+        this.Enabled := false
     }
 
     EditProfile()
     {
+        this.Enabled := false
         this.Profile.Load(currentXml)
     }
 
     EditMacro()
     {
+        this.Enabled := false
         this.Macro.Load()
     }
 

@@ -73,6 +73,7 @@ Class MacroRecorder Extends CGUI
                 this.gui.UpdateKey(MacroName)
 
         this.oldMacroName := "", this.selectedRow := 0
+        this.gui.Enabled := true
         this.Hide()
         this.gui.UpdateMacros()
     }
@@ -347,6 +348,7 @@ Class MacroRecorder Extends CGUI
 
         xml := new Xml(currentXml)
         this.oldMacroName := "", this.selectedRow := 0
+        this.gui.Enabled := true
 	}
 }
 
