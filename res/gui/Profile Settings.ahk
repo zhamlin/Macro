@@ -7,6 +7,7 @@ Class Profile Extends CGUI
         this.edtName := this.AddControl("Edit", "edtName", "x87 y6 w299 h23 ", "")
         this.radioBrowse := this.AddControl("Radio", "radioBrowse", "x33 y86 w329 h16 ", "Browse")
         this.radioSelect := this.AddControl("Radio", "radioSelect", "x33 y121 w327 h16 ", "Select from list")
+        this.radioSelect := this.AddControl("Radio", "radioHotkey", "x33 y161 w327 h16 ", "Select with F12")
         this.AddControl("GroupBox", "X", "x6 y62 w380 h159 ", "Select Program Executable")
         this.edtExe := this.AddControl("Edit", "edtExe", "x55 y187 w278 h23 ", "")
         this.btnOK := this.AddControl("Button", "btnOK", "x148 y224 w75 h23 ", "OK")
@@ -44,6 +45,13 @@ Class Profile Extends CGUI
     radioSelect_CheckedChanged()
     {
         this.gui.Windows.Load()
+    }
+
+    radioHotkey_CheckedChanged()
+    {
+        Hotkey, F12, SelectExe
+        Hotkey, Escape, SelectExe
+        SplashTextOn, 230, 30, Select Program, Activate the program and press F12
     }
 
     btnCanel_Click()
@@ -116,6 +124,6 @@ SelectExe:
         gui.Profile.edtExe.Text := exeName
     }
     Hotkey, F12, Off
-    Hotkey, Esc, Off
+    Hotkey, Escape, Off
     WinActivate % "ahk_pid " . DllCall("GetCurrentProcessId")
 return
