@@ -168,12 +168,13 @@ AHK_NOTIFYICON(wParam, lParam) {
 Install:
     debug ? debug("Installing files")
     FileCreateDir, % A_ScriptDir . "\res"
+    FileCreateDir, % A_ScriptDir . "\res\ahk"
     FileCreateDir, % A_ScriptDir . "\res\dll"
     FileCreateDir, % A_ScriptDir . "\res\scripts"
     FileCreateDir, % A_ScriptDir . "\res\profiles"
     FileInstall, res\dll\AutoHotkey.dll, res\dll\AutoHotkey.dll
     FileInstall, res\dll\SciLexer.dll, res\dll\SciLexer.dll
-    FileInstall, res\gui\Recorder.ahk, res\gui\Recorder.ahk
+    FileInstall, res\ahk\Recorder.ahk, res\ahk\Recorder.ahk
 return
 
 
@@ -182,10 +183,10 @@ return
 #include <ini>
 #include <Debug>
 
-#Include, %A_ScriptDir%\res\gui\macro recorder.ahk
-#Include, %A_ScriptDir%\res\gui\profile settings.ahk
-#Include, %A_ScriptDir%\res\gui\textBlock.ahk
-#Include, %A_ScriptDir%\res\gui\settings.ahk
-#Include, %A_ScriptDir%\res\gui\main.ahk
-#Include, %A_ScriptDir%\res\gui\settings.ahk
-#Include, %A_ScriptDir%\res\gui\windows.ahk
+#Include, %A_ScriptDir%\res\ahk\macro_recorder.ahk
+#Include, %A_ScriptDir%\res\ahk\profile_settings.ahk
+#Include, %A_ScriptDir%\res\ahk\textBlock.ahk
+#Include, %A_ScriptDir%\res\ahk\settings.ahk
+#Include, %A_ScriptDir%\res\ahk\main.ahk
+#Include, %A_ScriptDir%\res\ahk\settings.ahk
+#Include, %A_ScriptDir%\res\ahk\windows.ahk
