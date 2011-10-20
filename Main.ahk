@@ -5,13 +5,12 @@
 
 SetBatchLines, -1
 ListLines, Off
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory.
-
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender, Ini
 
 args := arg()
-debug := 1 ;args[1]
-debugFile := args[2]
+debug := 1 ;( args[1] = "/debug" )
+debugFile := (debug ? args[2] : "")
 version := 0.5
 
 if (!FileExist(A_ScriptDir . "\res"))
@@ -28,6 +27,8 @@ AhkRecorder := AhkDllThread(ahkDll)
 AhkSender := AhkDllThread(ahkDll)
 AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
+
+
 
 OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
 
