@@ -6,7 +6,8 @@
 SetBatchLines, -1
 ListLines, Off
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
-global xml, currentXml, version, debug, AhkScript, defaultScript, ScriptThread, AhkSender, Ini
+
+global xml, currentXml, version, debug, AhkScript, Ini
 
 args := arg()
 debug := 1 ;( args[1] = "/debug" )
@@ -27,8 +28,6 @@ AhkRecorder := AhkDllThread(ahkDll)
 AhkSender := AhkDllThread(ahkDll)
 AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
-
-
 
 OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
 
@@ -123,6 +122,7 @@ Hotkeys(disable = 0) {
 }
 
 HandleKey(type, value, delay = -1) {
+    global AhkSender
     text := xml.Get(type, value, "value")
 
     if (!text)
