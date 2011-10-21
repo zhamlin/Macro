@@ -29,6 +29,7 @@ Class Main Extends CGUI
         Edit.AddMenuItem("Settings", "EditSettings")
         Edit.AddMenuItem("", "")
         Edit.AddMenuItem("Macro Manager", "EditMacro")
+        Edit.AddMenuItem("Check for updates", "CheckUpdates")
         this.Edit := Edit
 
         this.MenuBar.AddSubMenu("Profile", ProfileMenu)
@@ -103,6 +104,11 @@ Class Main Extends CGUI
     {
         debug ? debug("Exiting")
         ExitApp
+    }
+
+    CheckUpdates()
+    {
+        Update()
     }
 
     btnHelp_Click()

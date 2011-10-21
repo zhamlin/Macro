@@ -16,6 +16,9 @@ ProcessCommandLine()
 if (!FileExist(A_ScriptDir . "\res"))
     Install()
 
+if (Ini.UpdateOnStart)
+    Update()
+
 currentXml := A_ScriptDir . "\res\Profiles\Default.xml"
 xml := new Xml(currentXml)
 xml.Save(currentXml)
