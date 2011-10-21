@@ -12,10 +12,10 @@ global xml, currentXml, version, debug, AhkScript, Ini
 args := arg()
 debug := 1 ;( args[1] = "/debug" )
 debugFile := (debug ? args[2] : "")
-version := 0.5
+version := 0.6
 
 if (!FileExist(A_ScriptDir . "\res"))
-    Gosub, Install
+    Install()
 
 currentXml := A_ScriptDir . "\res\Profiles\Default.xml"
 xml := new Xml(currentXml)
@@ -166,17 +166,16 @@ AHK_NOTIFYICON(wParam, lParam) {
 
 }
 
-Install:
+Install() {
     debug ? debug("Installing files")
     FileCreateDir, % A_ScriptDir . "\res"
     FileCreateDir, % A_ScriptDir . "\res\ahk"
     FileCreateDir, % A_ScriptDir . "\res\dll"
-    FileCreateDir, % A_ScriptDir . "\res\scripts"
     FileCreateDir, % A_ScriptDir . "\res\profiles"
-    FileInstall, res\dll\AutoHotkey.dll, res\dll\AutoHotkey.dll
-    FileInstall, res\dll\SciLexer.dll, res\dll\SciLexer.dll
-    FileInstall, res\ahk\Recorder.ahk, res\ahk\Recorder.ahk
-return
+    FileInstall, res\dll\AutoHotkey.dll, res\dll\AutoHotkey.dll, 1
+    FileInstall, res\dll\SciLexer.dll, res\dll\SciLexer.dll, 1
+    FileInstall, res\ahk\Recorder.ahk, res\ahk\Recorder.ahk, 1
+}
 
 
 #include <CGUI>
