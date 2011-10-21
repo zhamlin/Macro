@@ -185,15 +185,15 @@ Install() {
 }
 
 Update() {
-    if (!A_IsCompiled)
-        return
+    ;if (!A_IsCompiled)
+        ;return
 
     UrlDownloadToFile, http://www.autohotkey.net/~zzzooo11/Macro/version.txt, % A_ScriptDir . "\v.txt"
     FileRead, ver, % A_ScriptDir . "\v.txt"
     FileDelete, % A_ScriptDir . "\v.txt"
 
     ; We have the latest verion
-    if (version = ver)
+    if (version >= ver)
         return
 
     MsgBox, 4, Update, % "Installed Version: " . version . "`nCurrent Version:   " . ver . "`n`nWould you like to update?"

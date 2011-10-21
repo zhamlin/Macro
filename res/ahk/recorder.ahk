@@ -1,7 +1,7 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Persistent
 #SingleInstance, Force
-; #NoTrayIcon
+ #NoTrayIcon
 
 SetBatchLines, -1
 ListLines, Off

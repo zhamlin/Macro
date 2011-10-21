@@ -1,9 +1,9 @@
 *.exe
 *.ini
 *.bat
+*.xml
 
 version.txt
 upload.ahk
 
 lib/_doc/
-res/profiles/
