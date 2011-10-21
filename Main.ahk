@@ -19,7 +19,7 @@ if (!FileExist(A_ScriptDir . "\res"))
 
 currentXml := A_ScriptDir . "\res\Profiles\Default.xml"
 xml := new Xml(currentXml)
-xml.Save(A_ScriptDir . "\res\Profiles", "Default")
+xml.Save(currentXml)
 
 Ini := new Ini(A_ScriptDir . "\res\settings.ini")
 ahkDll := A_ScriptDir . "\res\dll\AutoHotkey.dll"

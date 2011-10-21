@@ -64,7 +64,7 @@ Class MacroRecorder Extends CGUI
     {
         debug ? debug("Saving macros")
         this.UpdateMacro()
-        xml.Save(A_ScriptDir . "\res\Profiles", xml.Get("name")) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
         this.ClearCurrentMacro()
 
         ; Update current hotkey with new macro name.

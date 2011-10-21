@@ -88,7 +88,7 @@ Class Textblock Extends CGUI
 
         StringReplace, text, text, `n, ``n, All ; Change newlines to `n for storage in xml
         xml.AddText(name, text, delay)
-        xml.Save(A_ScriptDir . "\res\Profiles", xml.Get("name")) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
 
         this.name := name
         this.edtName.text := "", this.edtText.text := "", this.editDelay := -1
@@ -105,7 +105,7 @@ Class Textblock Extends CGUI
         xml.AddKey(key, "Textblock", this.name, options, repeat)
         StringReplace, options, options, % key
         this.gui.keys.Items.Modify(selectedRow, "", key, "Textblock", this.name, options, repeat)
-        xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
         Hotkeys()
     }
 

@@ -182,11 +182,8 @@ Class Main Extends CGUI
                 SCI_SetText(script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}")
 
             AhkScript.addScript(script)
-
-            ;xml.AddScript(script)
-
-            FileDelete % A_ScriptDir . "\res\scripts\" . name . ".ahk"
-            FileAppend, % script, % A_ScriptDir . "\res\scripts\" . name . ".ahk"
+            xml.AddScript(script)
+            xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
         }
     }
 
@@ -275,7 +272,7 @@ Class Main Extends CGUI
         debug ? debug("Addied key: " . key)
         this.keys.Items.Add("", key, "", "", optionsWithoutKey, "None")
         xml.AddKey(key, "", "", options)
-        xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
         Hotkeys()
     }
 
@@ -325,8 +322,7 @@ Class Main Extends CGUI
 
             this.keys.Items.Add("", key, type, value, options, repeat)
         }
-        SplitPath, profile,,,, name
-        FileRead, script, % A_ScriptDir . "\res\scripts\" . name . ".ahk"
+        script := xml.Get("script")
 
         if (!script)
             script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}"
@@ -350,7 +346,7 @@ Class Main Extends CGUI
         xml.AddKey(key, "Macro", macroName, options, "None")
         StringReplace, options, options, % key
         this.keys.Items.Modify(selectedRow, "", key, "Macro",  macroName, options)
-        xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
         Hotkeys()
     }
 
@@ -411,7 +407,7 @@ AssignMacro:
     gui.keys.Items.Modify(selectedRow, "", key, "Macro", A_ThisMenuItem, options)
     if (type = "textblock")
         xml.Delete("textblocks", name) ; Remove textblock
-    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
     debug ? debug("Assigned macro: " . A_ThisMenuItem . " to key: " . key)
     Hotkeys()
 return
@@ -433,7 +429,7 @@ AssignScript:
     StringReplace, options, options, % key
     gui.keys.Items.Modify(selectedRow, "", key, "Script", "Script", options, "None")
 
-    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
     debug ? debug("Assigned Script to key: " . key)
     Hotkeys()
 return
@@ -445,7 +441,7 @@ DeleteKey:
         xml.Delete("textblocks", name) ; Remove textblock
 
     xml.Delete("keys", key)
-    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
     debug ? debug("Deleted key: " . key)
 return
 
@@ -456,7 +452,7 @@ DisableKey:
     xml.AddKey(key, "Disabled", "Disabled", options)
 
     gui.keys.Items.Modify(selectedRow, "", key, "Disabled", "None")
-    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
 
     debug ? debug("Disabled key:" . key)
     Hotkeys()
@@ -468,7 +464,7 @@ Options:
     StringReplace, options, options, % key
 
     gui.keys.Items.Modify(selectedRow, "", key, type, Name, options, A_ThisMenuItem)
-    xml.Save(A_ScriptDir . "\res\Profiles\", xml.Get("name")) ; Save xml file.
+    xml.Save(A_ScriptDir . "\res\Profiles\" . xml.Get("name") . ".xml") ; Save xml file.
 
     debug ? debug("Changed:" . key . "'s options")
     Hotkeys()

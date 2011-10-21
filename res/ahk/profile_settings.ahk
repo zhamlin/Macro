@@ -100,7 +100,7 @@ Class Profile Extends CGUI
         ; Update values in xml file.
         xml.Set("exe", exe)
         xml.Set("name", name)
-        xml.Save(A_ScriptDir . "\res\Profiles\", name) ; Save xml file.
+        xml.Save(A_ScriptDir . "\res\Profiles\" . name . ".xml") ; Save xml file.
 
         ; Clear value from edit boxs.
         this.edtName.Text := "", this.edtExe.Text := "", this.Loaded := 0

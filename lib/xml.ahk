@@ -21,6 +21,10 @@ Class Xml
                     </macros>
                     <textblocks>
                     </textblocks>
+                    <script>
+                        <value>
+                        </value>
+                    </script>
                  </profile>
             )
         }
@@ -71,10 +75,21 @@ Class Xml
         node.appendChild(this.oXml.createTextNode(value))
     }
 
+    AddScript(script= "") {
+
+        this.Delete("script", "value")
+        this.AddNode("script", "value")
+
+        node := this.oXml.selectSingleNode("//script/value")
+        node.appendChild(this.oXml.createTextNode(script))
+
+    }
+
     ; Adds a key to xml file.
     AddKey(key, type, value, options = "None", repeat = "None") {
         if (this.Exist("key", key))
             this.Delete("keys", key)
+
         this.AddNode("keys", key)
         this.AddAttribute("keys", key, "options", options)
 
@@ -140,6 +155,12 @@ Class Xml
             return ( this.oXml.selectSingleNode("/profile/info/exe").text )
         else if (type = "textblock")
             return ( this.oXml.selectSingleNode("/profile/textblocks/" . name . "/" . what).text )
+        else if (type = "script") {
+            value := this.oXml.selectSingleNode("/profile/script/value").text
+            ;StringReplace, value, value, &#10;, `n, All
+            return value
+        }
+
     }
 
     GetAttribute(name) {
@@ -177,9 +198,9 @@ Class Xml
     }
 
 
-    Save(dir, name) {
-        FileDelete % dir . "/" . name . ".xml"
-        FileAppend, % TidyUp(this.oXml.xml), % dir . "/" . name . ".xml"
+    Save(file) {
+        FileDelete % file
+        FileAppend, % this.oXml.xml, % file
     }
 
 }
