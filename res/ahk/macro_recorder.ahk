@@ -13,6 +13,7 @@ Class MacroRecorder Extends CGUI
         this.btnStopRecord := this.AddControl("Button", "btnStopRecord", "x525 y25 w90 h23", "Stop Recording")
 
         this.chkDelay := this.AddControl("Checkbox", "chkDelay", "x485 y80 w165 h30", "Record delays between events")
+        this.chkMouse := this.AddControl("Checkbox", "chkMouse", "x485 y110 w165 h30", "Include mouse clicks")
 
 		this.AddControl("GroupBox", "e", "x222 y10 w430 h380", "Details")
 
@@ -90,23 +91,19 @@ Class MacroRecorder Extends CGUI
 
     btnStartRecord_Click()
 	{
-        global globalDelay
+        global globalDelay, globalClick
         this.StopRecording := 0
         this.ClearCurrentMacro()
 
         debug ? debug("Start recording macro")
 
         ; Disable controls while recording keys.
-        this.btnStartRecord.Disable()
-        this.btnStopRecord.Enable()
-        this.currentMacro.Disable()
-        this.macroList.Disable()
-        this.btnOK.Disable()
-        this.btnAdd.Disable()
-        this.btnDelete.Disable()
-        this.chkDelay.Disable()
+        this.SetControls(0)
+        this.btnStopRecord.Enabled  := 1
+        this.btnStartRecord.Enabled := 0
 
         globalDelay := this.chkDelay.Checked
+        globalClick := this.chkMouse.Checked
         SetTimer, record, 1
 	}
 
@@ -116,16 +113,21 @@ Class MacroRecorder Extends CGUI
         debug ? debug("Stop recording macro")
         this.StopRecording := 1
         ; Enable controls
-        this.currentMacro.Enable()
-        this.btnStartRecord.Enable()
-        this.macroList.Enable()
-        this.btnOK.Enable()
-        this.btnAdd.Enable()
-        this.btnDelete.Enable()
-        this.chkDelay.Enable()
-
-        this.btnStopRecord.Disable()
+        this.SetControls(1)
+        this.btnStopRecord.Enabled  := 0
+        this.btnStartRecord.Enabled := 1
         this.UpdateMacro()
+    }
+
+    SetControls(Enabled)
+    {
+        this.currentMacro.Enabled   := Enabled
+        this.macroList.Enabled      := Enabled
+        this.btnOK.Enabled          := Enabled
+        this.btnAdd.Enabled         := Enabled
+        this.btnDelete.Enabled      := Enabled
+        this.chkDelay.Enabled       := Enabled
+        this.chkMouse.Enabled       := Enabled
     }
 
     btnCancel_Click()
@@ -174,7 +176,7 @@ Class MacroRecorder Extends CGUI
 
     currentMacro_ContextMenu()
     {
-        if (this.macroList.FocusedIndex) ;Also works if other controls like the button were focused before.
+        if (this.macroList.FocusedIndex && this.currentMacro.Enabled) ;Also works if other controls like the button were focused before.
         {
             selectedRow := this.currentMacro.FocusedIndex
             ControlGet, pressedKeys, List, , % this.currentMacro.ClassNN, A ; Get all the keys from the listbox
@@ -193,7 +195,7 @@ Class MacroRecorder Extends CGUI
 
     macroList_ContextMenu()
     {
-        if (this.macroList.FocusedIndex)
+        if (this.macroList.FocusedIndex && this.macroList.Enabled)
             Menu, MacroName, Show
     }
 
@@ -421,6 +423,7 @@ record:
         ; load the script to monitor key strokes.
         AhkRecorder.ahkDll(A_ScriptDir . "\res\ahk\recorder.ahk")
         AhkRecorder.ahkAssign("delay", (globalDelay ? "1" : "0"))
+        AhkRecorder.ahkAssign("mouseClicks", (globalClick ? "1" : "0"))
         While (!AhkRecorder.ahkReady()) ;wait for the script to be ready
             Sleep 10
     }

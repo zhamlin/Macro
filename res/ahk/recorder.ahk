@@ -1,7 +1,7 @@
 #NoEnv  ; Recommended for performance and compatibility with future AutoHotkey releases.
 #Persistent
 #SingleInstance, Force
- #NoTrayIcon
+#NoTrayIcon
 
 SetBatchLines, -1
 ListLines, Off
@@ -26,19 +26,27 @@ EndKeys := "
 )"
 StringReplace, endKeys, endKeys, `n, %A_Space%, All
 keys := "qwertyuiopasdfghjklzxcvbnm1234567890-=[]\;',./"
+mouseButtons := "RButton,LButton,MButton"
 
 Loop, Parse, keys
     Hotkey, % A_LoopField, Keys
 Loop, Parse, EndKeys, %A_Space%
     Hotkey, % A_LoopField, Keys
+
+if (mouseClicks)
+    Loop, Parse, mouseButtons, `,
+        Hotkey, % "~" . A_LoopField, Keys
 return
 
 Keys:
+    StringReplace, Hotkey, A_ThisHotkey, ~
     done := 0
-    msg := "{" . A_ThisHotkey . " Down}`n"
-    KeyWait % A_ThisHotkey
+
+    msg := "{" . Hotkey . " Down}`n"
+    KeyWait % Hotkey
     msg := ( (delay ? ("Sleep, " . (done ? A_TimeSincePriorHotkey - A_TimeSinceThisHotkey : A_TimeSinceThisHotkey) . "`n") : "")
-        . "{" . (done ? A_PriorHotkey : A_ThisHotkey) . " Up}`n" )
+        . "{" . (done ? A_PriorHotkey : Hotkey) . " Up}`n" )
+
     done := 1
     Sleep, 10
 return

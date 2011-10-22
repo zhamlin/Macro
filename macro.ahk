@@ -12,7 +12,7 @@ global xml, currentXml, version, debug, AhkScript, Ini, debugFile
 version := 0.7
 
 ProcessCommandLine()
-
+debug := 1
 if (!FileExist(A_ScriptDir . "\res"))
     Install()
 
@@ -89,14 +89,14 @@ WindowActivated( wParam,lParam ) {
     if (wParam != 32772 || !Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
         return
     WinGet, proccessExe, ProcessPath, % "ahk_id " lParam
-    debug ? debug("Checking for different profile.")
+    debug ? debug(proccessExe . " activated.")
     Loop % A_ScriptDir . "\res\Profiles\*.xml"
     {
         if (A_LoopFileName = "Default.xml")
             Continue
         FileRead, text, % A_LoopFileLongPath
         RegExMatch(text, "`am)\<exe\>(.*)?\<", exe)
-
+        StringSplit, exe, exe1, <
         if (proccessExe = exe1)
         {
             Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
