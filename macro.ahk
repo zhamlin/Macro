@@ -7,7 +7,7 @@ SetBatchLines, -1
 ListLines, Off
 SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
 
-global xml, currentXml, version, debug, AhkScript, Ini, debugFile
+global xml, currentXml, version, debug, AhkScript, AhkRecorder, Ini, debugFile, PID
 
 version := 0.7
 
@@ -31,7 +31,8 @@ AhkSender := AhkDllThread(ahkDll)
 AhkScript := AhkDllThread(ahkDll)
 AhkSender.ahkTextDll("")
 
-OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
+OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon\
+OnMessage(0x4a, "RecieveData")  ; 0x4a is WM_COPYDATA
 
 PID := DllCall("GetCurrentProcessId")
 gui := new Main()
@@ -83,7 +84,7 @@ Pressed:
 Return
 
 WindowActivated( wParam,lParam ) {
-    global PID, gui
+    global gui
     ; Check to make sure that profile switching is on
     ; , the current window is not the script , and that the message was for a window being activated.
     if (wParam != 32772 || !Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
@@ -168,6 +169,10 @@ AHK_NOTIFYICON(wParam, lParam) {
 
 }
 
+Test(wParam, lParam) {
+    MsgBox, % wParam . "`n" . lParam
+}
+
 Install() {
     debug ? debug("Installing files")
 
@@ -212,6 +217,24 @@ ProcessCommandLine() {
             debug := 1, var := A_Index + 1, debugFile := %var%
     }
 }
+
+RecieveData(wParam, lParam)
+{
+    global gui
+    StringAddress := NumGet(lParam + 2*A_PtrSize)  ; Retrieves the CopyDataStruct's lpData member.
+    msg := StrGet(StringAddress)  ; Copy the string out of the structure.
+
+
+    StringSplit, msg, msg, `n
+    Loop % msg0 - 1
+            gui.Macro.currentMacro.Items.Add("", msg%A_Index%) ; Add the key to listview.
+    Rows := gui.Macro.currentMacro.Items.Count
+    gui.Macro.currentMacro.Items.Modify(rows, "vis") ; Makes sure the added key is visible.
+
+    return true  ; Returning 1 (true) is the traditional way to acknowledge this message.
+}
+
+
 
 #include <CGUI>
 #include <Xml>

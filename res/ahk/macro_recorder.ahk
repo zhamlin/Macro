@@ -91,7 +91,6 @@ Class MacroRecorder Extends CGUI
 
     btnStartRecord_Click()
 	{
-        global globalDelay, globalClick
         this.StopRecording := 0
         this.ClearCurrentMacro()
 
@@ -102,14 +101,26 @@ Class MacroRecorder Extends CGUI
         this.btnStopRecord.Enabled  := 1
         this.btnStartRecord.Enabled := 0
 
-        globalDelay := this.chkDelay.Checked
-        globalClick := this.chkMouse.Checked
-        SetTimer, record, 1
+        Delay := this.chkDelay.Checked
+        Click := this.chkMouse.Checked
+
+        ; load the script to monitor key strokes.
+        AhkRecorder.ahkDll(A_ScriptDir . "\res\ahk\recorder.ahk")
+        AhkRecorder.ahkAssign("delay", (Delay ? "1" : "0"))
+        AhkRecorder.ahkAssign("mouseClicks", (Click ? "1" : "0"))
+        AhkRecorder.ahkAssign("PID", PID)
+
+        While (!AhkRecorder.ahkReady()) ;wait for the script to be ready
+            Sleep 10
+
 	}
 
 
     btnStopRecord_Click()
     {
+        AhkRecorder.ahkTerminate()
+        initial := 0
+
         debug ? debug("Stop recording macro")
         this.StopRecording := 1
         ; Enable controls
@@ -412,41 +423,4 @@ MouseEvent:
 
     gui.Macro.currentMacro.Items.Insert(selectedRow, "", event)
     gui.UpdateMacro()
-return
-
-
-record:
-    if (!initial)
-    {
-        initial := 1
-
-        ; load the script to monitor key strokes.
-        AhkRecorder.ahkDll(A_ScriptDir . "\res\ahk\recorder.ahk")
-        AhkRecorder.ahkAssign("delay", (globalDelay ? "1" : "0"))
-        AhkRecorder.ahkAssign("mouseClicks", (globalClick ? "1" : "0"))
-        While (!AhkRecorder.ahkReady()) ;wait for the script to be ready
-            Sleep 10
-    }
-
-    msg := AhkRecorder.ahkGetVar("msg")
-
-    if (msg != oldMsg)
-    {
-        if (msg)
-        {
-            StringSplit, msg, msg, `n
-            Loop % msg0-1
-                gui.Macro.currentMacro.Items.Add("", msg%A_Index%) ; Add the key to listview.
-        }
-        Rows := gui.Macro.currentMacro.Items.Count
-        gui.Macro.currentMacro.Items.Modify(rows, "vis") ; Makes sure the added key is visible.
-    }
-    if (gui.Macro.StopRecording)
-    {
-        AhkRecorder.ahkTerminate()
-        initial := 0
-        SetTimer, record, off
-        Return
-    }
-    oldMsg := msg
 return
