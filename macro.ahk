@@ -54,7 +54,7 @@ Pressed:
     if (type = "textblock")
         delay := xml.Get("textblock", value, "delay")
     else if (type = "script")
-        AhkScript.ahkFunction("OnEvent", hotkey, "Pressed", A_TimeSinceThisHotkey, currentXml)
+        AhkScript.ahkFunction("OnEvent", hotkey, "Pressed", A_TimeSinceThisHotkey)
 
     if (repeat = "toggle")
     {
@@ -77,8 +77,8 @@ Pressed:
     else if (type = "script")
     {
         While (GetKeyState(hotkey, "P") )
-            AhkScript.ahkFunction("OnEvent", hotkey, "Down", A_TimeSinceThisHotkey, currentXml)
-        AhkScript.ahkFunction("OnEvent", hotkey, "Released", A_TimeSinceThisHotkey, currentXml)
+            AhkScript.ahkFunction("OnEvent", hotkey, "Down", A_TimeSinceThisHotkey)
+        AhkScript.ahkFunction("OnEvent", hotkey, "Released", A_TimeSinceThisHotkey)
     }
 Return
 

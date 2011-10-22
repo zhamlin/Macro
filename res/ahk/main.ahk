@@ -179,13 +179,14 @@ Class Main Extends CGUI
         {
             AhkScript.ahkTerminate()
             AhkScript := AhkDllThread(ahkDll)
-            AhkScript.ahkTextDll("")
+            FileRead, playMacro, % A_ScriptDir . "\lib\PlayMacro.ahk"
+            AhkScript.ahktextdll("#Persistent`n#NoTrayIcon`ncurrentXml := """ . currentXml . """`n" . playMacro)
 
             While (!AhkScript.ahkReady())
                 Sleep, 10
 
             if (!script)
-                SCI_SetText(script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}")
+                SCI_SetText(script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time) {`n`n}")
 
             AhkScript.addScript(script)
             xml.AddScript(script)
@@ -331,10 +332,12 @@ Class Main Extends CGUI
         script := xml.Get("script")
 
         if (!script)
-            script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time = 0) {`n`n}"
+            script := ";Key = Name of key pressed`n;Event = Pressed, Down, or Released`n;time = time since key was pressed.`n`nOnEvent(key, event, time) {`n`n}"
 
         AhkScript.ahkTerminate("")
-        ScriptThread := AhkScript.ahktextdll("#Persistent`n#NoTrayIcon`nSetWorkingDir, " . A_ScriptDir . "\`n")
+
+        FileRead, playMacro, % A_ScriptDir . "\lib\PlayMacro.ahk"
+        AhkScript.ahktextdll("#Persistent`n#NoTrayIcon`ncurrentXml := """ . currentXml . """`n" . playMacro)
         AhkScript.addScript(script)
 
         SCI_SetText(script)

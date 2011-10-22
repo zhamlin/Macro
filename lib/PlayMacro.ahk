@@ -1,11 +1,12 @@
-PlayMacro(macro, profile) {
+PlayMacro(macro) {
+    global currentXml
     static oXML := ComObjCreate("MSXML2.DOMDocument")
-    oXML.async := False  
-    oXML.Load(profile)
-    
+    oXML.async := False
+    oXML.Load(currentXml)
+
     text := oXml.selectSingleNode("/profile/macros/" . macro . "/value").text
     StringReplace, text, text, ``n, `n, all
-    
+
     Loop, Parse, text, `n
     {
         if (!A_LoopField)
@@ -21,3 +22,4 @@ PlayMacro(macro, profile) {
     }
     Send % sendString
 }
+
