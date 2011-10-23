@@ -65,14 +65,13 @@ Class Main Extends CGUI
 
         this.AddMenuBar(this.MenuBar)
         this.Title := "Macro"
-        this.Show("h440 w820")
+        ;this.Show("h440 w820")
 
         ; Add scintilla control to tab.
         this.hSci := SCI_Add(this.hwnd, 22, 38, 780, 340, "Child Border Visible GROUP TABSTOP ", "", A_ScriptDir . "\res\dll\scilexer.dll")
         Control, Hide,,, % "ahk_id" this.hSci
 
-        Control, ChooseString, Default, % this.drpProfiles.ClassNN, A
-        this.hwnd := WinActive("A")
+        Control, ChooseString, Default, , % "ahk_id " . this.drpProfiles.hwnd
 
         this.Macro := new MacroRecorder(this, this.hwnd)
         this.Profile := new Profile(this, this.hwnd)
@@ -242,14 +241,8 @@ Class Main Extends CGUI
 
     drpProfiles_SelectionChanged(SelectedIndex)
     {
-        if (!this.drpProfiles.SelectedIndex)
-            return
-
-        SelectedIndex := this.drpProfiles.SelectedIndex
-        ControlGet, var, List, Focused, % this.drpProfiles.ClassNN, % "ahk_id " this.hwnd ; Get text from dropdown
-        StringSplit, var, var, `n
-
-        if (!selectedText := var%SelectedIndex%)
+        selectedText := this.drpProfiles.SelectedItem
+        if (!selectedText)
             return
         else if (selectedText = "Default")
         {

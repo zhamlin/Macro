@@ -18,7 +18,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			this._.Insert("ControlStyles", {Multi : 0x800, ReadOnly : 0x4000, Sort : 0x2, ToggleSelection : 0x8})
 		this._.Insert("Events", ["SelectionChanged"])
 		if(Type = "ListBox")
-			this._.Insert("Messages", {5 : "KillFocus", 4 : "SetFocus" }) ;Used for automatically registering message callbacks		
+			this._.Insert("Messages", {5 : "KillFocus", 4 : "SetFocus" }) ;Used for automatically registering message callbacks
 		else if(Type = "ComboBox" || Type = "DropDownList")
 			this._.Insert("Messages", {4 : "KillFocus", 3 : "SetFocus" }) ;Used for automatically registering message callbacks
 	}
@@ -34,10 +34,10 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 	/*
 	Variable: SelectedItem
 	The text of the selected item.
-	
+
 	Variable: SelectedIndex
 	The index of the selected item.
-	
+
 	Variable: Items
 	An array containing all items. See <CChoiceControl.CItems>.
 	*/
@@ -49,10 +49,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			DetectHidden := A_DetectHiddenWindows
 			DetectHiddenWindows, On
 			if(Name = "SelectedItem")
-			{
-				SendMessage, 0x147, 0, 0,,% "ahk_id " this.hwnd
-				Value := this._.Items[ErrorLevel + 1]
-			}
+				ControlGet, Value, Choice,,, % "ahk_id " . this.hwnd
 			else if(Name = "Text")
 				ControlGet, Value, Choice,,,% "ahk_id " this.hwnd
 			else if(Name = "SelectedIndex")
@@ -69,7 +66,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 				;~ ControlGet, List, List,,, % " ahk_id " this.hwnd
 				;~ Value := Array()
 				;~ Loop, Parse, List, `n
-					;~ Value.Insert(A_LoopField)			
+					;~ Value.Insert(A_LoopField)
 			;~ }
 			Loop % Params.MaxIndex()
 				if(IsObject(Value)) ;Fix unlucky multi parameter __GET
@@ -111,7 +108,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 				;~ if(!IsObject(Value))
 				;~ {
 					;~ if(InStr(Value, "|") = 1) ;Overwrite current items
-					;~ {						
+					;~ {
 						;~ ;Hide overwritten controls for now (until they can be removed properly).
 						;~ for index, item in this.Items
 							;~ for index2, control in item.Controls
@@ -189,10 +186,10 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 	To handle control events you need to create a function with this naming scheme in your window class: ControlName_EventName(params)
 	The parameters depend on the event and there may not be params at all in some cases.
 	Additionally it is required to create a label with this naming scheme: GUIName_ControlName
-	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent(). 
+	GUIName is the name of the window class that extends CGUI. The label simply needs to call CGUI.HandleEvent().
 	For better readability labels may be chained since they all execute the same code.
 	Instead of using ControlName_EventName() you may also call <CControl.RegisterEvent> on a control instance to register a different event function name.
-	
+
 	Event: SelectionChanged(SelectedItem)
 	Invoked when the selection was changed.
 	*/
@@ -214,14 +211,14 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			this._.GUINum := GUINum
 			this._.hwnd := hwnd
 		}
-		
+
 		/*
 		Variable: 1,2,3,4,...
 		Individual items can be accessed by their index.
-		
+
 		Variable: Count
 		The number of items in this control.
-		*/		
+		*/
 		__Get(Name)
 		{
 			;~ global CGUI
@@ -239,7 +236,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		/*
 		Function: Add
 		Adds an item to the list of choices.
-		
+
 		Parameters:
 			Text - The text of the new item.
 			Position - The position at which the item will be inserted. Items with indices >= this value will be appended.
@@ -270,7 +267,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 		/*
 		Function: Remove
 		Removes an item to the list of choices.
-		
+
 		Parameters:
 			IndexTextOrItem - The item which should be removed. This can either be an index, the text of the item or the item object stored in the Items array.
 		*/
@@ -347,7 +344,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			/*
 			Function: AddControl
 			Adds a control to this item that will be visible only when this item is selected. The parameters correspond to the Add() function of CGUI.
-			
+
 			Parameters:
 				Type - The type of the control.
 				Name - The name of the control.
@@ -369,7 +366,7 @@ Class CChoiceControl Extends CControl ;This class is a ComboBox, ListBox and Dro
 			/*
 			Variable: Selected
 			If true, the item is selected.
-			
+
 			Variable: Text
 			The text of the list item.
 			*/

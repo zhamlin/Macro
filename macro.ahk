@@ -5,14 +5,14 @@
 
 SetBatchLines, -1
 ListLines, Off
-SetWorkingDir %A_ScriptDir%  ; Ensures a consistent starting directory
+SetWorkingDir %A_ScriptDir%  ; Ensures a consistent  starting directory
 
-global xml, currentXml, version, debug, AhkScript, AhkRecorder, Ini, debugFile, PID
+global xml, currentXml, version, debug, AhkScript, AhkRecorder, Ini
 
-version := 0.7
+version := 0.8
 
 ProcessCommandLine()
-debug := 1
+
 if (!FileExist(A_ScriptDir . "\res"))
     Install()
 
@@ -34,6 +34,10 @@ OnMessage(0x4a, "RecieveData")  ; For the recorder script
 
 PID := DllCall("GetCurrentProcessId")
 gui := new Main()
+
+if (Ini.Settings.ShowOnStart)
+    gui.Show()
+
 
 DllCall( "RegisterShellHookWindow", UInt, gui.hwnd )
 MsgNum := DllCall( "RegisterWindowMessage", Str,"SHELLHOOK" )
@@ -82,7 +86,7 @@ Pressed:
 Return
 
 WindowActivated( wParam,lParam ) {
-    global gui
+    global gui, PID
     ; Check to make sure that profile switching is on
     ; , the current window is not the script , and that the message was for a window being activated.
     if (wParam != 32772 || !Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
@@ -98,14 +102,13 @@ WindowActivated( wParam,lParam ) {
         StringSplit, exe, exe1, <
         if (proccessExe = exe1)
         {
-            Control, ChooseString, % SubStr(A_LoopFileName, 1, -4), % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
+            Control, ChooseString, % SubStr(A_LoopFileName, 1, -4),, % "ahk_id " . gui.drpProfiles.hwnd
             switchedProfile := 1
             break
         }
     }
     if (currentXml != A_ScriptDir . "\res\Profiles\Default.xml" && !switchedProfile)
-        Control, ChooseString, Default, % gui.drpProfiles.ClassNN, % "ahk_id " . gui.hwnd
-    switchedProfile := 0
+        Control, ChooseString, Default,, % "ahk_id " . gui.drpProfiles.hwnd
 }
 
 
@@ -184,7 +187,7 @@ Update() {
 
     ; We have the latest verion
     if (version >= ver) {
-        MsgBox, You have the latest verison.
+        MsgBox, 64,, You have the latest verison.
         return
     }
 
@@ -197,6 +200,7 @@ Update() {
 }
 
 ProcessCommandLine() {
+    global debugFile
     Loop, % (arg := {0: %false%}) [0]
     {
         if (%A_Index% == "/install")

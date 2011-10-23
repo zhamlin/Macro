@@ -204,37 +204,3 @@ Class Xml
     }
 
 }
-
-indent(amount) {
-    Loop % amount
-        t .= A_Tab
-    return t
-}
-
-TidyUp(xmlInfo) {
-    StringReplace, xmlInfo, xmlInfo, `r, , All
-    StringReplace, xmlInfo, xmlInfo, `n, , All
-    StringReplace, xmlInfo, xmlInfo, <?xml version="1.0"?>
-    RegExMatch(xmlInfo, "\s??\<.*?\>", root), root := Trim(root, "`n ")
-    StringReplace, xmlInfo, xmlInfo, % root
-    StringReplace, xmlInfo, xmlInfo, %A_Tab%, , All
-    xmlInfo := Trim(xmlInfo, " "), newxml := "<?xml version=""1.0""?>`n" . root . "`n", indent := 1
-    Loop, Parse, xmlInfo, <
-    {
-        if (!Trim(A_LoopField))
-            Continue
-        else if (cont)
-            newXml .= "<" . A_LoopField . "`n", cont := 0
-
-        else if (!InStr(A_LoopField, "/"))
-        {
-            if (SubStr(A_LoopField, 0) != ">")
-                cont := 1, newXml .= indent(indent) . "<" . A_LoopField
-            else
-                newXml .= indent(indent) . "<" . A_LoopField . "`n", indent++
-        }
-        else
-            indent--, newXml .= indent(indent) . "<" . A_LoopField . "`n"
-    }
-    return newXml
-}

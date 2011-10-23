@@ -14,7 +14,7 @@ Class MacroRecorder Extends CGUI
 
         this.chkDelay := this.AddControl("Checkbox", "chkDelay", "x485 y80 w165 h30", "Record delays between events")
 
-        this.AddControl("Groupbox", "groupbox1", "x485 y110 w165 h80", "")
+        this.AddControl("Groupbox", "groupbox1", "x485 y110 w155 h80", "")
         this.chkMouse := this.AddControl("Checkbox", "chkMouse", "x510 y107 w120 h20", "Include mouse clicks")
         this.chkCoords := this.AddControl("Checkbox", "chkCoords", "x490 y130 w100 h20", "Record location")
 
@@ -57,8 +57,7 @@ Class MacroRecorder Extends CGUI
         Menu, Macro, Add, Delete, Delete ; Menu for adding delays and mouse events
 
         this.gui := mainGui
-        if (owner)
-            this.Owner := owner, this.OwnerAutoClose := 1, this.MinimizeBox := 0
+        this.Owner := owner, this.OwnerAutoClose := 1, this.MinimizeBox := 0
 
         this.Toolwindow := 1
 		this.Title := "Macro Recorder"
@@ -100,6 +99,7 @@ Class MacroRecorder Extends CGUI
 
     btnStartRecord_Click()
 	{
+        global PID
         this.StopRecording := 0
         this.ClearCurrentMacro()
 
@@ -112,9 +112,7 @@ Class MacroRecorder Extends CGUI
 
         Delay := this.chkDelay.Checked
         Click := this.chkMouse.Checked
-
-        if (this.chkCoords.Enabled)
-            location := this.chkCoords.Checked
+        location := this.chkCoords.Checked
 
         ; load the script to monitor key strokes.
         AhkRecorder.ahkDll(A_ScriptDir . "\res\ahk\recorder.ahk")
@@ -348,7 +346,6 @@ Class MacroRecorder Extends CGUI
             if (Trim(A_LoopField, "`n`r "))
                 this.macroList.Items.Add("", A_LoopField) ; Add each macro to the listview.
 
-        this.chkCoords.Enabled := 0
         this.Show()
 
         if (name)
