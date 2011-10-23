@@ -43,8 +43,11 @@ Keys:
     done := 0
     if hotkey in %mouseButtons%
     {
-        MouseGetPos, x, y
-        Send("MouseMove, " . x . ", " . y . "`n")
+        if (location)
+        {
+            MouseGetPos, x, y
+            Send("MouseMove, " . x . ", " . y . "`n")
+        }
     }
     msg := "{" . Hotkey . " Down}`n", Send(msg)
     KeyWait % Hotkey

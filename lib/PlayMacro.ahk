@@ -11,6 +11,11 @@ PlayMacro(macro) {
     {
         if (!A_LoopField)
             Continue
+        else if (InStr(A_LoopField, "MouseMove"))
+        {
+            RegExMatch(A_LoopField, "O)MouseMove, (\d*?), (\d*)", match)
+            MouseMove, % match.1, % match.2, 1
+        }
         else if (InStr(A_LoopField, "Sleep,"))
         {
             Send % sendString

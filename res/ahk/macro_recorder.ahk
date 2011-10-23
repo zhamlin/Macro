@@ -13,7 +13,10 @@ Class MacroRecorder Extends CGUI
         this.btnStopRecord := this.AddControl("Button", "btnStopRecord", "x525 y25 w90 h23", "Stop Recording")
 
         this.chkDelay := this.AddControl("Checkbox", "chkDelay", "x485 y80 w165 h30", "Record delays between events")
-        this.chkMouse := this.AddControl("Checkbox", "chkMouse", "x485 y110 w165 h30", "Include mouse clicks")
+
+        this.AddControl("Groupbox", "groupbox1", "x485 y110 w165 h80", "")
+        this.chkMouse := this.AddControl("Checkbox", "chkMouse", "x510 y107 w120 h20", "Include mouse clicks")
+        this.chkCoords := this.AddControl("Checkbox", "chkCoords", "x490 y130 w100 h20", "Record location")
 
 		this.AddControl("GroupBox", "e", "x222 y10 w430 h380", "Details")
 
@@ -61,6 +64,12 @@ Class MacroRecorder Extends CGUI
 		this.Title := "Macro Recorder"
 	}
 
+    chkMouse_CheckedChanged()
+    {
+        enabled := this.chkMouse.Checked
+        this.chkCoords.Enabled := enabled
+    }
+
     btnOK_Click()
     {
         debug ? debug("Saving macros")
@@ -104,10 +113,14 @@ Class MacroRecorder Extends CGUI
         Delay := this.chkDelay.Checked
         Click := this.chkMouse.Checked
 
+        if (this.chkCoords.Enabled)
+            location := this.chkCoords.Checked
+
         ; load the script to monitor key strokes.
         AhkRecorder.ahkDll(A_ScriptDir . "\res\ahk\recorder.ahk")
         AhkRecorder.ahkAssign("delay", (Delay ? "1" : "0"))
         AhkRecorder.ahkAssign("mouseClicks", (Click ? "1" : "0"))
+        AhkRecorder.ahkAssign("location", (location ? "1" : "0"))
         AhkRecorder.ahkAssign("PID", PID)
 
         While (!AhkRecorder.ahkReady()) ;wait for the script to be ready
@@ -139,6 +152,7 @@ Class MacroRecorder Extends CGUI
         this.btnDelete.Enabled      := Enabled
         this.chkDelay.Enabled       := Enabled
         this.chkMouse.Enabled       := Enabled
+        this.chkCoords.Enabled      := Enabled
     }
 
     btnCancel_Click()
@@ -333,6 +347,8 @@ Class MacroRecorder Extends CGUI
         Loop, Parse, macros, |
             if (Trim(A_LoopField, "`n`r "))
                 this.macroList.Items.Add("", A_LoopField) ; Add each macro to the listview.
+
+        this.chkCoords.Enabled := 0
         this.Show()
 
         if (name)

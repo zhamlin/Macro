@@ -27,12 +27,10 @@ Ini := new Ini(A_ScriptDir . "\res\settings.ini")
 ahkDll := A_ScriptDir . "\res\dll\AutoHotkey.dll"
 
 AhkRecorder := AhkDllThread(ahkDll)
-AhkSender := AhkDllThread(ahkDll)
 AhkScript := AhkDllThread(ahkDll)
-AhkSender.ahkTextDll("")
 
-OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon\
-OnMessage(0x4a, "RecieveData")  ; 0x4a is WM_COPYDATA
+OnMessage(0x404, "AHK_NOTIFYICON") ; Detect clicks on tray icon
+OnMessage(0x4a, "RecieveData")  ; For the recorder script
 
 PID := DllCall("GetCurrentProcessId")
 gui := new Main()
@@ -125,25 +123,12 @@ Hotkeys(disable = 0) {
 }
 
 HandleKey(type, value, delay = -1) {
-    global AhkSender
     text := xml.Get(type, value, "value")
 
     if (!text)
         return
     else if (type = "macro")
-    {
-        if (InStr(text, "Sleep"))
-        {
-            text := RegExReplace(text, "(\{\w*?\s(?:Down|Up)\})", "Send, $1")
-            StringReplace, text, text, ``n, `n, all
-        }
-        else
-        {
-            text := "Send, " . text
-            StringReplace, text, text, ``n, , all
-        }
-        AhkSender.ahkExec(text) ; Send macro in a new thread.
-    }
+        PlayMacro(value)
     else if (type = "textblock")
     {
         StringReplace, text, text, ``n, `n, all
@@ -190,16 +175,19 @@ Install() {
 }
 
 Update() {
-    ;if (!A_IsCompiled)
-        ;return
+    if (!A_IsCompiled)
+        return
 
     UrlDownloadToFile, http://www.autohotkey.net/~zzzooo11/Macro/version.txt, % A_ScriptDir . "\v.txt"
     FileRead, ver, % A_ScriptDir . "\v.txt"
     FileDelete, % A_ScriptDir . "\v.txt"
 
     ; We have the latest verion
-    if (version >= ver)
+    if (version >= ver) {
+        MsgBox, You have the latest verison.
         return
+    }
+
 
     MsgBox, 4, Update, % "Installed Version: " . version . "`nCurrent Version:   " . ver . "`n`nWould you like to update?"
     IfMsgBox, No
