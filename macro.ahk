@@ -9,9 +9,11 @@ SetWorkingDir %A_ScriptDir%  ; Ensures a consistent  starting directory
 
 global xml, currentXml, version, debug, AhkScript, AhkRecorder, Ini
 
-version := 0.8
+version := 0.9
 
 ProcessCommandLine()
+
+debug := 1
 
 if (!FileExist(A_ScriptDir . "\res"))
     Install()
@@ -89,7 +91,10 @@ WindowActivated( wParam,lParam ) {
     global gui, PID
     ; Check to make sure that profile switching is on
     ; , the current window is not the script , and that the message was for a window being activated.
-    if (wParam != 32772 || !Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
+    static messageList := "4,32772"
+    if wParam not in %messageList%
+        return
+    else if (!Ini.Settings.ProfileSwitching || WinActive("ahk_pid " . PID))
         return
     WinGet, proccessExe, ProcessPath, % "ahk_id " lParam
     debug ? debug(proccessExe . " activated.")
@@ -157,20 +162,18 @@ AHK_NOTIFYICON(wParam, lParam) {
 
 }
 
-Test(wParam, lParam) {
-    MsgBox, % wParam . "`n" . lParam
-}
-
 Install() {
     debug ? debug("Installing files")
 
     ; Small delay so the updater can exit
     Sleep, 1000
     FileCreateDir, % A_ScriptDir . "\res"
+    FileCreateDir, % A_ScriptDir . "\lib"
     FileCreateDir, % A_ScriptDir . "\res\ahk"
     FileCreateDir, % A_ScriptDir . "\res\dll"
     FileCreateDir, % A_ScriptDir . "\res\profiles"
 
+    FileInstall, lib\PlayMacro.ahk, lib\PlayMacro.ahk, 1
     FileInstall, res\dll\AutoHotkey.dll, res\dll\AutoHotkey.dll, 1
     FileInstall, res\dll\SciLexer.dll, res\dll\SciLexer.dll, 1
     FileInstall, res\ahk\updater.exe, res\ahk\updater.exe, 1
